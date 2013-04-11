@@ -1,0 +1,511 @@
+package com.ami.ec.channel.ws.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.ami.ec.channel.bean.asp.ForAspServices;
+import com.ami.ec.channel.bean.officialPlugin.OfficialPluginServices;
+import com.ami.ec.channel.common.GetBeanServlet;
+import com.ami.ec.channel.dao.officialPlugin.RunLogMapper;
+import com.ami.ec.channel.domain.asp.OrderHeadForWs;
+import com.ami.ec.channel.domain.asp.OrderLineForWs;
+import com.ami.ec.channel.domain.officialPlugin.RunLog;
+import com.ami.ec.channel.io.impl.ConditionOrderParams;
+import com.ami.ec.channel.io.impl.ConditionOrderReturn;
+import com.ami.ec.channel.io.impl.FailedOrders;
+import com.ami.ec.channel.io.impl.IncrementOrderParams;
+import com.ami.ec.channel.io.impl.IncrementOrderReturn;
+import com.ami.ec.channel.io.impl.OrderLine;
+import com.ami.ec.channel.io.impl.ReturnOrder;
+import com.ami.ec.channel.io.impl.SalesOrder;
+import com.ami.ec.channel.io.impl.UploadReturnOrderParams;
+import com.ami.ec.channel.io.impl.UploadReturnOrderReturn;
+import com.ami.ec.channel.io.impl.UploadSalesOrderParams;
+import com.ami.ec.channel.io.impl.UploadSalesOrderReturn;
+import com.ami.ec.channel.util.WebUtil;
+import com.ami.ec.channel.ws.OfficialWebservice;
+import com.ami.ec.channel.ws.OfficialXmlAnalyze;
+import com.ami.ec.channel.ws.Security;
+
+public class OfficialWSImpl implements OfficialWebservice {
+	static Logger logger = Logger.getLogger(OfficialWSImpl.class);
+	private RunLogMapper runLogMapper;
+	private Security security;
+	private Long pjId = new Long(81009);
+
+	public RunLogMapper getRunLogMapper() {
+		return runLogMapper;
+	}
+
+	public void setRunLogMapper(RunLogMapper runLogMapper) {
+		this.runLogMapper = runLogMapper;
+	}
+
+	public Security getSecurity() {
+		return security;
+	}
+
+	public void setSecurity(Security security) {
+		this.security = security;
+	}
+
+	public UploadReturnOrderReturn uploadReturnOrder(
+			UploadReturnOrderParams param) {
+		Date start = new Date();
+		UploadReturnOrderReturn r = new UploadReturnOrderReturn();
+		r.setStartDate(start);
+		RunLog log = new RunLog();
+		// 检查KEY
+		if (param.getWsKey() == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY不能为空");
+			logger.error("KEY不能为空");
+			log.setLogContent("KEY不能为空");
+			log.setLogName("UploadReturnOrderReturn");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		Long storeId = security.checkWsKey(param.getUserNo(),param.getWsKey());
+		if (storeId == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY无效");
+			logger.error("KEY无效");
+			log.setLogContent("KEY无效");
+			log.setLogName("UploadReturnOrderReturn");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		List<ReturnOrder> roList = param.getReturnOrderList();
+		// 检查内容
+		if (WebUtil.isNullForList(roList)) {
+			r.setFlag("ERROR");
+			r.setComment("无上传内容");
+			logger.error("无上传内容");
+			log.setLogContent("无上传内容");
+			log.setLogName("UploadReturnOrderReturn");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		OfficialPluginServices officialPluginServices = (OfficialPluginServices)GetBeanServlet.getBean("officialPluginServices");
+		ForAspServices forAspServices = (ForAspServices)GetBeanServlet.getBean("forAspServices");
+		int failed=0,success=0;
+		List<FailedOrders> failureOrders = new ArrayList();
+		List<String> successOrders = new ArrayList();
+		for (ReturnOrder ro : roList) {
+			//sunmw 2012-10-22 如果没有退货明细，按只退运费处理，自动获取原订单的一条明细，设置数量为0
+//			if(WebUtil.isNull(ro.getLineNo()))
+//			{
+//				Map m = new HashMap();
+//				m.put("StoreId", storeId);
+//				m.put("PjId", pjId);
+//				m.put("OrigOrderNo", ro.getOrigOrderNo());
+//				Map or = forAspServices.searchOrder(m);
+//				List<OrderHeadForWs> orderHeadList  = (List) or.get("OrderHeadList");
+//				if(!WebUtil.isNullForList(orderHeadList))
+//				{
+//					List<OrderLineForWs> olList = orderHeadList.get(0).getOrderLineList();
+//					if(!WebUtil.isNullForList(olList))
+//					{
+//						OrderLineForWs ol = olList.get(0);
+//						ro.setLineNo(ol.getOrderLineNo());
+//						ro.setSkuCode(ol.getSkuCd());
+//						ro.setNum(0);
+//						ro.setOrderRealPrice(new BigDecimal(0));
+//						ro.setArticleNo(ol.getSkuCd());
+//					}
+//				}
+//			}
+			// 检查必须传入订单信息
+			String str = checkReturnOrderInfo(ro);
+			if(str!=null)
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment(str);
+				fo.setOrderNo(ro.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			//更新official plugin退货信息
+			Map oresult = officialPluginServices.uploadReturnOrder(ro, storeId,pjId);
+			if(oresult.get("Flag").equals("error"))
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment((String)oresult.get("Message"));
+				fo.setOrderNo(ro.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			// 向ASP发送订单消息
+			Map aresult = forAspServices.uploadReturnOrder(ro, storeId);
+			if(aresult.get("Flag").equals("error"))
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment((String)aresult.get("Message"));
+				fo.setOrderNo(ro.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			successOrders.add(ro.getOrderNo());
+			success++;
+		}
+		r.setFailed(failed);
+		r.setFailedOrders(failureOrders);
+		r.setSuccess(success);
+		r.setSuccessOrders(successOrders);
+		r.setRequestTotal(roList.size());
+		r.setFlag("SUCCESS");
+		logger.info("执行完成:total:"+roList.size()+",success:"+success+",failed:"+failed);
+		log.setLogContent("执行完成:total:"+roList.size()+",success:"+success+",failed:"+failed);
+		log.setLogName("UploadReturnOrderReturn");
+		log.setLogTime(new Date());
+		runLogMapper.insertSelective(log);
+		r.setEndDate(new Date());
+		return r;
+	}
+	
+	private String checkReturnOrderInfo(ReturnOrder ro)
+	{
+		if(WebUtil.isNull(ro.getOrderNo()))
+			return "[OrderNo] is null";
+		if(WebUtil.isNull(ro.getOrigOrderNo()))
+			return "[OrigOrderNo] is null";
+		if(WebUtil.isNull(ro.getBuyerID()))
+			return "[BuyerID] is null";
+		if(WebUtil.isNull(ro.getRealGoodsFee()))
+			return "[RealGoodsFee] is null";
+		if(WebUtil.isNull(ro.getOrderStatus()))
+			return "[OrderStatus] is null";
+		if(WebUtil.isNull(ro.getLineNo()))
+			return "[LineNo] is null";
+		if(WebUtil.isNull(ro.getArticleNo()))
+			return "[ArticleNo] is null";
+		if(WebUtil.isNull(ro.getSkuCode()))
+			return "[SkuCode] is null";
+		if(WebUtil.isNull(ro.getNum()))
+			return "[Num] is null";
+		if(WebUtil.isNull(ro.getOrderRealPrice()))
+			return "[OrderRealPrice] is null";
+		return null;
+	}
+
+	public UploadSalesOrderReturn uploadSaleOrder(UploadSalesOrderParams param) {
+		Date start = new Date();
+		UploadSalesOrderReturn r = new UploadSalesOrderReturn();
+		r.setStartDate(start);
+		RunLog log = new RunLog();
+		log.setLogName("UploadSalesOrderReturn");
+		// 检查KEY
+		if (param.getWsKey() == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY不能为空");
+			logger.error("KEY不能为空");
+			log.setLogContent("KEY不能为空");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		Long storeId = security.checkWsKey(param.getUserNo(),param.getWsKey());
+		if (storeId == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY无效");
+			logger.error("KEY无效");
+			log.setLogContent("KEY无效");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		List<SalesOrder> soList = param.getSaleOrderList();
+		// 检查内容
+		if (WebUtil.isNullForList(soList)) {
+			r.setFlag("ERROR");
+			r.setComment("无上传内容");
+			logger.error("无上传内容");
+			log.setLogContent("无上传内容");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		OfficialPluginServices officialPluginServices = (OfficialPluginServices)GetBeanServlet.getBean("officialPluginServices");
+		ForAspServices forAspServices = (ForAspServices)GetBeanServlet.getBean("forAspServices");
+		int failed=0,success=0;
+		List<FailedOrders> failureOrders = new ArrayList();
+		List<String> successOrders = new ArrayList();
+		for (SalesOrder so : soList) {
+			// 检查必须传入订单信息
+			String str = checkSalesOrderInfo(so);
+			if(str!=null)
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment(str);
+				fo.setOrderNo(so.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			//更新official plugin退货信息
+			Map oresult = officialPluginServices.uploadSalesOrder(so, storeId,pjId);
+			if(oresult.get("Flag").equals("error"))
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment((String)oresult.get("Message"));
+				fo.setOrderNo(so.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			// 向ASP发送订单消息
+			Map aresult = forAspServices.uploadSalesOrder(so, storeId);
+			if(aresult.get("Flag").equals("error"))
+			{
+				FailedOrders fo = new FailedOrders();
+				fo.setComment((String)aresult.get("Message"));
+				fo.setOrderNo(so.getOrderNo());
+				failureOrders.add(fo);
+				failed ++;
+				continue;
+			}
+			successOrders.add(so.getOrderNo());
+			success++;
+		}
+		r.setFailed(failed);
+		r.setFailedOrders(failureOrders);
+		r.setSuccessOrders(successOrders);
+		r.setSuccess(success);
+		r.setRequestTotal(soList.size());
+		r.setFlag("SUCCESS");
+		logger.info("执行完成:total:"+soList.size()+",success:"+success+",failed:"+failed);
+		log.setLogContent("执行完成:total:"+soList.size()+",success:"+success+",failed:"+failed);
+		log.setLogTime(new Date());
+		runLogMapper.insertSelective(log);
+		r.setEndDate(new Date());
+		return r;
+	}
+	
+	private String checkSalesOrderInfo(SalesOrder so)
+	{
+		if(WebUtil.isNull(so.getOrderNo()))
+			return "[OrderNo] is null";
+		if(WebUtil.isNull(so.getBuyerID()))
+			return "[BuyerID] is null";
+		if(WebUtil.isNull(so.getGoodsFee()))
+			return "[GoodsFee] is null";
+		if(WebUtil.isNull(so.getRealGoodsFee()))
+			return "[RealGoodsFee] is null";
+		if(WebUtil.isNull(so.getGoodsDiscountFee()))
+			return "[GoodsDiscountFee] is null";
+		if(WebUtil.isNull(so.getRealGoodsFee()))
+			return "[RealGoodsFee] is null";
+		if(WebUtil.isNull(so.getPostFee()))
+			return "[PostFee] is null";
+		if(WebUtil.isNull(so.getPayTime()))
+			return "[PayTime] is null";
+		if(WebUtil.isNull(so.getOrderStatus()))
+			return "[OrderStatus] is null";
+//		if(WebUtil.isNull(so.getPostType()))
+//			return "[PostType] is null";
+//		if(WebUtil.isNull(so.getDeliverCompany()))
+//			return "[DeliverCompany] is null";
+		if(WebUtil.isNull(so.getReceiverName()))
+			return "[ReceiverName] is null";
+		if(WebUtil.isNull(so.getReceiverAddress()))
+			return "[ReceiverAddress] is null";
+		if(WebUtil.isNull(so.getReceiverCity()))
+			return "[ReceiverCity] is null";
+		if(WebUtil.isNull(so.getReceiverState()))
+			return "[ReceiverState] is null";
+		if(WebUtil.isNull(so.getReceiverZip()))
+			return "[ReceiverZip] is null";
+		if(WebUtil.isNull(so.getReceiverPhone())&&WebUtil.isNull(so.getReceiverMobile()))
+			return "[ReceiverPhone or ReceiverMobile] is null";
+		if(WebUtil.isNullForList(so.getOrderLines()))
+			return "[OrderLine] is null";
+		for(OrderLine ol:so.getOrderLines())
+		{
+			if(WebUtil.isNull(ol.getLineNo()))
+				return "[OrderLine.LineNo] is null";
+			if(WebUtil.isNull(ol.getArticleNo()))
+				return "[OrderLine.ArticleNo] is null";
+			if(WebUtil.isNull(ol.getSkuCode()))
+				return "[OrderLine.SkuCode] is null";
+			if(WebUtil.isNull(ol.getSalePrice()))
+				return "[OrderLine.SalePrice] is null";
+			if(WebUtil.isNull(ol.getNum()))
+				return "[OrderLine.Num] is null";
+			if(WebUtil.isNull(ol.getOrderPrice()))
+				return "[OrderLine.OrderPrice] is null";
+			if(WebUtil.isNull(ol.getOrderPriceAmt()))
+				return "[OrderLine.OrderPriceAmt] is null";
+			if(WebUtil.isNull(ol.getRealPrice()))
+				return "[OrderLine.RealPrice] is null";
+			if(WebUtil.isNull(ol.getRealPriceAmt()))
+				return "[OrderLine.RealPriceAmt] is null";
+			if(WebUtil.isNull(ol.getDiscountPrice()))
+				return "[OrderLine.DiscountPrice] is null";
+			if(WebUtil.isNull(ol.getDiscountPriceAmt()))
+				return "[OrderLine.DiscountPriceAmt] is null";
+		}
+		return null;
+	}
+
+	public ConditionOrderReturn conditionOrder(ConditionOrderParams param) {
+		ConditionOrderReturn r = new ConditionOrderReturn();
+		RunLog log = new RunLog();
+		log.setLogName("UploadSalesOrderReturn");
+		// 检查KEY
+		if (param.getWsKey() == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY不能为空");
+			logger.error("KEY不能为空");
+			log.setLogContent("KEY不能为空");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		List<Long> storeId = security.checkWsKeyMultiple(param.getUserNo(),param.getWsKey());
+		if (WebUtil.isNullForList(storeId)) {
+			r.setFlag("ERROR");
+			r.setComment("KEY无效");
+			logger.error("KEY无效");
+			log.setLogContent("KEY无效");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		if(WebUtil.isNull(param.getOrigOrderNo())&&WebUtil.isNull(param.getReceiverTel()))
+		{
+			r.setFlag("ERROR");
+			r.setComment("无查询条件");
+			logger.error("无查询条件");
+			log.setLogContent("无查询条件");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		ForAspServices forAspServices = (ForAspServices) GetBeanServlet.getBean("forAspServices");
+		Map m = new HashMap();
+		m.put("StoreId", storeId);
+		m.put("PjId", pjId);
+		m.put("OrigOrderType", param.getOrigOrderType());
+		m.put("OrigOrderNo", param.getOrigOrderNo());
+		m.put("ReceiverTel", param.getReceiverTel());
+		m.put("BuyerNick", param.getBuyerNick());
+		Map result = forAspServices.searchOrder(m);
+		List<OrderHeadForWs> orderHeadList  = (List) result.get("OrderHeadList");
+		if(WebUtil.isNullForList(orderHeadList))
+		{
+			r.setTotal(0);
+		}
+		else
+		{
+			r.setTotal(orderHeadList.size());
+			r.setOrderHeadList(orderHeadList);
+		}
+		r.setFlag("SUCCESS");
+		return r;
+	}
+
+	public IncrementOrderReturn incrementOrder(IncrementOrderParams param) {
+		IncrementOrderReturn r = new IncrementOrderReturn();
+		RunLog log = new RunLog();
+		log.setLogName("UploadSalesOrderReturn");
+		// 检查KEY
+		if (param.getWsKey() == null) {
+			r.setFlag("ERROR");
+			r.setComment("KEY不能为空");
+			logger.error("KEY不能为空");
+			log.setLogContent("KEY不能为空");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		List<Long> storeId = security.checkWsKeyMultiple(param.getUserNo(),param.getWsKey());
+		if (WebUtil.isNullForList(storeId)) {
+			r.setFlag("ERROR");
+			r.setComment("KEY无效");
+			logger.error("KEY无效");
+			log.setLogContent("KEY无效");
+			log.setLogTime(new Date());
+			runLogMapper.insertSelective(log);
+			return r;
+		}
+		ForAspServices forAspServices = (ForAspServices) GetBeanServlet.getBean("forAspServices");
+		Map m = new HashMap();
+		m.put("StoreId", storeId);
+		m.put("PjId", pjId);
+		m.put("Rtn", param.getRtn());
+		m.put("OrigOrderType", param.getOrigOrderType());
+		m.put("FromDate", param.getFromDate());
+		m.put("TimeStamp", param.getTimestamp());
+		Map result = forAspServices.incrementOrder(m);
+		List<OrderHeadForWs> orderHeadList  = (List) result.get("OrderHeadList");
+		if(WebUtil.isNullForList(orderHeadList))
+		{
+			r.setTotal(0);
+		}
+		else
+		{
+			r.setTotal(orderHeadList.size());
+			r.setOrderHeadList(orderHeadList);
+		}
+		r.setFlag("SUCCESS");
+		return r;
+	}
+
+	public String uploadReturnOrder(String userNo, String wsKey, String content) {
+		UploadReturnOrderParams param = new UploadReturnOrderParams();
+		param.setUserNo(userNo);
+		param.setWsKey(wsKey);
+		OfficialXmlAnalyze oxa = new OfficialXmlAnalyze();
+		Map m = oxa.returnOrderParam(content);
+		UploadReturnOrderReturn uror = null;
+		if(m.get("Flag").equals("error"))
+		{
+			uror = new UploadReturnOrderReturn();
+			uror.setFlag("error");
+			uror.setComment((String)m.get("Message"));
+		}
+		else
+		{
+			List returnOrderList = (List) m.get("ReturnOrderList");
+			param.setReturnOrderList(returnOrderList);
+			uror = uploadReturnOrder(param);
+		}
+		return oxa.returnOrderReturn(uror);
+	}
+
+	public String uploadSaleOrder(String userNo, String wsKey, String content) {
+		logger.info("userNo:"+userNo+",wsKey:"+wsKey);
+		UploadSalesOrderParams param = new UploadSalesOrderParams();
+		param.setUserNo(userNo);
+		param.setWsKey(wsKey);
+		OfficialXmlAnalyze oxa = new OfficialXmlAnalyze();
+		Map m = oxa.saleOrderParam(content);
+		UploadSalesOrderReturn usor = null;
+		if(m.get("Flag").equals("error"))
+		{
+			usor = new UploadSalesOrderReturn();
+			usor.setFlag("error");
+			usor.setComment((String)m.get("Message"));
+		}
+		else
+		{
+			List salesOrderList = (List) m.get("SalesOrderList");
+			param.setSaleOrderList(salesOrderList);
+			usor = uploadSaleOrder(param);
+		}
+		return oxa.saleOrderReturn(usor);
+	}
+
+}

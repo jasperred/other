@@ -1,0 +1,298 @@
+h1,h2,h3,h4 {
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+}
+
+em {
+	font-style: normal;
+}
+
+.none {
+	display: none;
+}
+
+.ic-btn {
+	width: 78px;
+	height: 25px;
+	border: 0;
+	font-size: 14px;
+	font-weight: 700;
+	background: url(../../images/ic_btn.png) no-repeat;
+	cursor: pointer;
+}
+
+.ic-btn-blue {
+	color: #FFF;
+	background-position: 0 0;
+}
+
+.ic-btn-blue:hover {
+	background-position: -80px 0;
+}
+
+.ic-btn-gray {
+	color: #000;
+	background-position: 0 -25px;
+}
+
+.ic-btn-gray:hover {
+	background-position: -80px -25px;
+}
+
+.box {
+	position: relative;
+	zoom: 1;
+	width:100%;
+}
+
+.box .hd,.box .rc-tp,.box .rc-tp span,.box .rc-bt,.box .rc-bt span {
+	background: url(../../images/box_bg.png) no-repeat;
+}
+
+.box .rc-tp,.box .rc-bt {
+	display: block;
+	width: 100%;
+	height: 4px;
+	_overflow: hidden;
+	position: relative;
+}
+
+.box .rc-tp span,.box .rc-bt span {
+	float: right;
+	width: 4px;
+	height: 4px;
+}
+
+.box .rc-tp {
+	background-position: -3px 0;
+	margin-bottom: -4px;
+}
+
+.box .rc-bt {
+	background-position: -3px -3px;
+	margin-top: -4px;
+}
+
+.box .rc-bt span {
+	background-position: 0 -3px;
+}
+
+.box .hd {
+	height: 28px;
+	border: solid #c1dbff;
+	border-width: 1px 1px 0;
+	background-color: #e1eefe;
+	background-position: 0 -89px;
+	background-repeat: repeat-x;
+	padding: 0 10px;
+}
+
+.box .hd h3 {
+	font: bold 14px/ 28px arial, sans-serif;
+	color: #004d80;
+}
+
+.box .bd {
+	border: 1px solid #c1dbff;
+	padding: 10px;
+	background: #FFF;
+}
+
+.box .form-tip {
+	position: absolute;
+	right: 1px;
+	top: 1px;
+	line-height: 28px;
+	line-height: 30px;
+	padding: 0 10px 0 0;
+}
+
+.box .form-tip em {
+	color: red;
+	font-style: normal;
+}
+
+#head {
+	width: auto;
+}
+
+.publish-title h2,dl.hint dt {
+	background: transparent url(../../images/ic_bg.png) no-repeat scroll 500px 500px;
+}
+
+.publish-title {
+	zoom: 1;
+}
+
+.publish-title:after {
+	display: block;
+	visibility: hidden;
+	clear: both;
+	height: 0;
+	content: "\0020";
+}
+
+.publish-title {
+	height: 74px;
+}
+
+.type-a h2 {
+	background-position: 0 -70px;
+}
+
+.type-b h2 {
+	background-position: 0 -24px;
+}
+
+.publish-title h2 {
+	float: left;
+	width: 161px;
+	height: 44px;
+	margin: 15px 10px 15px 22px;
+	padding: 0;
+}
+
+.publish-title h2 span {
+	display: none;
+}
+
+.publish-title .hint {
+	float: left;
+	margin-top: 28px;
+}
+
+dl.hint {
+	zoom: 1;
+}
+
+dl.hint:after {
+	display: block;
+	visibility: hidden;
+	clear: both;
+	height: 0;
+	content: "\0020";
+}
+
+dl.hint {
+	border: 1px solid #FFCA80;
+	padding: 4px 8px;
+	background-color: #FFFEE2;
+}
+
+dl.hint dt {
+	float: left;
+	padding-left: 17px;
+	background-position: -433px -25px;
+	font-weight: 700;
+	line-height: 16px;
+}
+
+dl.hint dd {
+	float: left;
+	line-height: 16px;
+}
+
+.result-box h2 {
+	font: bold 16px/ 26px arial, sans-serif;
+	color: #004d80;
+	border-bottom: 3px solid #a7cbff;
+	margin: 28px 0 30px;
+}
+
+.result {
+	background: url(../../images/result_warn.png) no-repeat 14px 0;
+	padding-left: 90px;
+	line-height: 22px;
+	color: #333;
+	padding-bottom: 40px;
+	padding-top: 8px;
+}
+
+.result-box .result {
+	margin: 20px 0 0 20px;
+}
+
+.result-warn {
+	background-image: url(../../images/result_warn.png);
+}
+
+.result-ok {
+	background-image: url(../../images/result_ok.png);
+}
+
+.result strong {
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.result a {
+	text-decoration: underline;
+}
+
+.result-box-gametrd {
+	margin-top: 30px;
+}
+
+.result-box-gametrd h4 {
+	color: #f6661d;
+	margin-bottom: 8px;
+}
+
+.result-box-gametrd li {
+	margin-bottom: 12px;
+}
+
+.result-box-gametrd li strong {
+	font-size: 12px;
+}
+
+.result-box-gametrd li p {
+	margin-left: 17px;
+}
+
+.tips {
+	overflow: hidden;
+	zoom: 1;
+}
+
+.tips h5 {
+	float: left;
+	width: 129px;
+	height: 51px;
+	text-indent: -9999px;
+}
+
+.tips div {
+	padding: 8px 12px;
+}
+
+.tips div strong {
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 6px;
+	display: block;
+}
+
+.tips div li {
+	font-weight: 700;
+	margin: 4px 0;
+}
+
+.tips div a {
+	font-weight: 400;
+	margin: 0 3px;
+	text-decoration: underline;
+}
+
+.tips-error h5 {
+	position: absolute;
+	background: url(../images/tips_error.png) no-repeat 0 19px;
+	margin-left: -129px;
+}
+
+.tips-error {
+	border: 1px solid #ff6500;
+	background: url(../images/tips_error.png) repeat-y -129px 0;
+	padding-left: 129px;
+}

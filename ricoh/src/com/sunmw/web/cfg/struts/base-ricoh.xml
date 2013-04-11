@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="base" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="viewCompanyAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/company/companySearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companySearchAction" class="companySearchAction"
+			method="searchCompany">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/company/companyResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyListAction" class="companySearchAction"
+			method="companyList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyListByShopAction" class="companySearchAction"
+			method="companyListByShop">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyInfoAction" class="companyInfoAction"
+			method="companyInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/company/companyInfo.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/error.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyInfoSaveAction" class="companyInfoAction"
+			method="saveCompany">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deleteCompanyAction" class="companyInfoAction"
+			method="deleteCompany">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewCompanyMachineTypeAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/company/companyMachineTypeSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyMachineTypeSearchAction" class="companyMachineTypeRefSearchAction"
+			method="searchCompanyMachineTypeRef">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/company/companyMachineTypeRefResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deleteCompanyMachineTypeRefAction" class="companyMachineTypeRefDeleteAction"
+			method="deleteCompanyMachineTypeRef">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="provinceListAction" class="baseAction"
+			method="provinceList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<!-- 机器分类 -->
+		<action name="machineCatListAction" class="baseAction"
+			method="machineCatList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyCategoryListAction" class="baseAction"
+			method="companyCategoryList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyDialogSearchAction" class="companySearchAction"
+			method="searchCompany">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/company/companyDialogResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userLoginMessageAction" class="baseAction"
+			method="userLoginMessage">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<include file="struts-default.xml" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.custom.i18n.resources" value="com.sunmw.web.cfg.i18n.messageResource" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.devMode" value="true"/>
+	<constant name="struts.configuration.xml.reload" value="true"/>
+	<constant name="struts.ui.theme" value="simple"/>
+	<constant name="struts.locale" value="zh_CN"/>
+	<constant name="struts.serve.static.browserCache" value="false"/>
+	<constant name="struts.url.includeParams" value="none"/>
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.multipart.maxSize" value="2097152"/>
+	<constant name="struts.multipart.saveDir" value="/tmp"/>	
+
+	<package name="default" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="viewNoSecurity" class="loginAction" method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/framework/common/no_security.jsp</param>
+			</result>
+		</action> 
+	</package>  
+	<include file="com/sunmw/web/cfg/struts/system.xml"></include>
+	<include file="com/sunmw/web/cfg/struts/base-ricoh.xml"></include>
+	<include file="com/sunmw/web/cfg/struts/order-ricoh.xml"></include>
+	<include file="com/sunmw/web/cfg/struts/fileupload-ricoh.xml"></include>
+	<include file="com/sunmw/web/cfg/struts/product-ricoh.xml"></include> 
+	<include file="com/sunmw/web/cfg/struts/invoice-ricoh.xml"></include>
+	<include file="com/sunmw/web/cfg/struts/inventory-ricoh.xml"></include>	
+	<include file="com/sunmw/web/cfg/struts/print-ricoh.xml"></include>	
+</struts>

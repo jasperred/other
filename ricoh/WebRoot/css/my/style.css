@@ -1,0 +1,131 @@
+
+/****************search*********************/
+.search-result-box {
+	BORDER-RIGHT: #E0ECFE 1px solid;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #E0ECFE 1px solid;
+	PADDING-LEFT: 10px;
+	PADDING-BOTTOM: 10px;
+	OVERFLOW: auto;
+	BORDER-LEFT: #E0ECFE 1px solid;
+	PADDING-TOP: 10px;
+	BORDER-BOTTOM: #E0ECFE 1px solid;
+	HEIGHT: 700px;
+}
+#search-box{
+	BORDER-RIGHT: #E0ECFE 1px solid;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #E0ECFE 1px solid;
+	PADDING-LEFT: 10px;
+	PADDING-BOTTOM: 10px;
+	OVERFLOW: auto;
+	BORDER-LEFT: #E0ECFE 1px solid;
+	PADDING-TOP: 10px;
+	BORDER-BOTTOM: #E0ECFE 1px solid;
+}
+#search-box td {
+	padding-bottom: 4px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 4px;
+}
+
+#search-box td.single-col {
+	width: 500px;
+}
+
+#search-box td.double-cols {
+	width: 500px;
+}
+
+#search-box .hd {
+	background: url(../../images/box_bg.png) no-repeat;
+	height: 28px;
+	border: solid #c1dbff;
+	border-width: 1px 1px 0;
+	background-color: #498CD0;
+	background-position: 0 -89px;
+	background-repeat: repeat-x;
+	padding: 0 10px;
+	font: bold 14px/ 0px tahoma,arial, sans-serif;
+	color: #498CD0;
+}
+/***ajax loading***/
+#loading {
+	position: absolute;
+	left: 45%;
+	top: 45%; 
+}
+
+
+input.medium-text {
+	margin: 0 0 0 5px;
+	padding: 3px 2px 0 3px;
+	height: 16px;
+	width:200px;
+	border: 1px solid #a7a6aa;
+}
+
+input.pure-text {
+	background: none;
+	border: 1px solid white;
+	color: #333;
+	width:150px;
+}
+
+input.right-pure-text {
+	background: none;
+	border: 1px solid white;
+	color: #333;
+	text-align: right;
+}
+
+input.long-pure-text {
+	background: none;
+	border: 1px solid white;
+	color: #333;
+	width:400px;
+}
+
+input.checkbox {
+	margin: 0 4px 0 5px; *
+	margin: 0 4px 0 0;
+	height: 18px;
+	vertical-align: middle;
+	background: none;
+}
+
+input.radio {
+	margin: 0 4px 0 5px; *
+	margin: 0 4px 0 0;
+	height: 24px;
+	vertical-align: middle;
+	background: none;
+}
+
+input.align-right {
+	margin: 0 0 0 5px;
+	padding: 3px 2px 0 3px;
+	height: 16px;
+	border: 1px solid #a7a6aa;
+	text-align: right;
+}
+select {
+        width:150px;
+}
+
+.readonly-class{
+	background:#F2F2F2
+}
+/**浮层***/
+#fullbg {
+	    background-color:Gray;
+	    z-index:3;
+	    position:absolute;
+	    left:0px;
+	    top:0px;
+	    filter:alpha(opacity=30); /* IE6 */
+	    -moz-opacity:0.3; /* Mozilla */
+	    -khtml-opacity:0.3; /* Safari */
+	    opacity:0.3;
+	}

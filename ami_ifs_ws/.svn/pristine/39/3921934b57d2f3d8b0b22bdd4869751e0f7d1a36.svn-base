@@ -1,0 +1,46 @@
+package com.ami.ifs.ws.order;
+
+import javax.jws.WebService;
+
+import org.apache.cxf.aegis.type.java5.XmlType;
+
+import com.ami.ifs.io.order.OrderBatchListIFSCParams;
+import com.ami.ifs.io.order.OrderBatchListIFSCReturn;
+import com.ami.ifs.io.order.OrderListIFSCParams;
+import com.ami.ifs.io.order.OrderListIFSCReturn;
+import com.ami.ifs.io.order.OrderUploadIFSCParams;
+import com.ami.ifs.io.order.OrderUploadIFSCReturn;
+import com.ami.ifs.io.order.ReturnUploadIFSCParams;
+import com.ami.ifs.io.order.ReturnUploadIFSCReturn;
+
+@WebService
+@XmlType(name="OrderServiceForEc")
+public interface OrderServiceForEc {
+	
+	/**
+	 * IFS C 批量得到订单列表（物流发货信息）
+	 * @return
+	 */
+	public OrderBatchListIFSCReturn orderBatchListIFSC(OrderBatchListIFSCParams r);
+	
+	/**
+	 * IFS C 按店铺得到订单列表（物流发货信息）
+	 * @return
+	 */
+	public OrderListIFSCReturn orderListIFSC(OrderListIFSCParams r);
+	
+	/**
+	 * IFS C 上传订单信息
+	 * @return
+	 */
+	public OrderUploadIFSCReturn orderUploadIFSC(OrderUploadIFSCParams r);
+	
+	/**
+	 * IFS C 上传退货信息
+	 * @return
+	 */
+	public ReturnUploadIFSCReturn returnUploadIFSC(ReturnUploadIFSCParams r);
+	
+	
+
+}

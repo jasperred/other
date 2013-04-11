@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="system" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="viewLogin" class="loginAction" method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/system/login.jsp</param>
+			</result>
+		</action>
+		<action name="viewLogin2" class="loginAction" method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/system/login2.jsp</param>
+			</result>
+		</action>
+		<action name="loginAction" class="loginAction" method="login">
+			<result name="success" type="redirect">
+				<param name="location">index.action</param>
+			</result>
+			<result name="error" type="redirect">
+				<param name="location">framework/system/login.jsp</param>
+			</result>
+		</action>
+		<action name="loginActionByAjax" class="loginAction" method="login">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+		</action>
+		<action name="logoutAction" class="loginAction" method="logout">
+			<result name="success" type="redirect">
+				<param name="location">viewLogin.action</param>
+			</result>
+		</action>
+		<action name="rand" class="com.sunmw.web.action.login.RandomAction">   
+	      <result type="stream">   
+	           <param name="contentType">image/jpeg</param>   
+	           <param name="inputName">inputStream</param>   
+	      </result>
+	 	</action>
+		<action name="index" class="loginAction" method="index2">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/mainFrame.jsp</param>
+			</result>
+			<result name="login" type="redirect">
+				<param name="location">viewLogin.action</param>
+			</result>
+		</action>
+		<action name="index2" class="loginAction" method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/system/main.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="navigateListAction" class="navigateListAction" method="navigateList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userMenuAction" class="menuAction" method="userMenu">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="menuListAction" class="moduleAction" method="menuList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewModuleAction" class="moduleAction" method="viewModule">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/module/module_config.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveModuleAction" class="moduleAction" method="saveModule">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deleteModuleAction" class="moduleAction" method="deleteModule">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="getModuleInfoAction" class="moduleAction" method="getModuleInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/module/module_info.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewUserSearchAction" class="loginAction" method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/userSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userSearchAction" class="userSearchAction"
+			method="searchUser">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/userResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userUpdateAction" class="userInfoAction"
+			method="updateUserInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="newUserAction" class="userInfoAction"
+			method="newUser">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="modifyPasswordAction" class="userInfoAction"
+			method="modifyPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewModifyPasswordByUserNoAction" class="userInfoAction"
+			method="viewModifyPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/modifyPasswordByUserNo.jsp</param>
+			</result>
+		</action>
+		<action name="modifyPasswordByUserNoAction" class="userInfoAction"
+			method="modifyPasswordByUserNo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+		</action>
+		<action name="viewResetPasswordAction" class="userInfoAction"
+			method="viewModifyPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/modifyPassword.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="resetPasswordAction" class="userInfoAction"
+			method="resetPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewModifyPasswordAction" class="userInfoAction"
+			method="viewModifyPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/modifyPassword.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewModifyPasswordByUserAction" class="userInfoAction"
+			method="viewModifyPassword">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/modifyPasswordByUser.jsp</param>
+			</result>
+		</action>
+		<action name="modifyPasswordByUserAction" class="userInfoAction"
+			method="modifyPasswordByUser">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+		</action>
+		<action name="getUserInfoAction" class="userInfoAction"
+			method="getUserInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/userInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userSecurityGroupAction" class="userSecurityGroupAction"
+			method="userSecurityGroupList">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/userSecurityGroup.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveUserSecurityGroupAction" class="userSecurityGroupAction"
+			method="saveUserSecurityGroup">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="userShopListAction" class="userShopAction"
+			method="userShopList">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/userShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveUserShopAction" class="userShopAction"
+			method="saveUserShop">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewSearchSecurityGroupAction" class="securityGroupSearchAction"
+			method="viewSearchSecurityGroup">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/securityGroupSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchSecurityGroupAction" class="securityGroupSearchAction"
+			method="searchSecurityGroup">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/securityGroupResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="securityGroupInfoAction" class="securityGroupInfoAction"
+			method="viewSecurityGroupInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/securityGroupInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveSecurityGroupAction" class="securityGroupInfoAction"
+			method="saveSecurityGroup">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="securityGroupPermissionAction" class="securityGroupInfoAction"
+			method="securityGroupPermissionList">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/securityGroupPermission.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveSecurityGroupPermissionAction" class="securityGroupInfoAction"
+			method="saveSecurityGroupPermission">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="securityGroupAreaAction" class="securityGroupInfoAction"
+			method="securityGroupAreaList">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/user/securityGroupArea.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveSecurityGroupAreaAction" class="securityGroupInfoAction"
+			method="saveSecurityGroupArea">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewAreaAction" class="areaSearchAction"
+			method="viewArea">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/area/areaSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchAreaAction" class="areaSearchAction"
+			method="searchSecurityGroup">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/area/areaResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="areaInfoAction" class="areaInfoAction"
+			method="viewAreaInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/area/areaInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveAreaAction" class="areaInfoAction"
+			method="saveArea">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="areaProvinceAction" class="areaInfoAction"
+			method="provinceList">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/area/areaProvince.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveAreaProvinceAction" class="areaInfoAction"
+			method="saveAreaProvince">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deleteAreaAction" class="areaInfoAction"
+			method="deleteArea">
+			<result name="success" type="dispatcher">
+				<param name="location">framework/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<!-- 产生验证码 -->
+		<action name="verifyRequestAction" class="verifyRequestAction"
+			method="genericVerify">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+	</package>
+</struts>

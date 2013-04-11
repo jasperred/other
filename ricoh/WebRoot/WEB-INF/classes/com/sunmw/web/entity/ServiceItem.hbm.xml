@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="ServiceItem"
+		table="service_item"
+	>
+		<meta attribute="sync-DAO">false</meta>
+
+		<meta attribute="sync-DAO">false</meta>
+
+		<id
+			name="Id"
+			type="integer"
+			column="service_item_id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="ServiceId"
+			column="service_id"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="ItemType"
+			column="item_type"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ItemStatus"
+			column="item_status"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ItemName"
+			column="item_name"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="ItemNo"
+			column="item_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Qty"
+			column="qty"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="ItemCate"
+			column="item_cate"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ItemSerialNo"
+			column="item_serial_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

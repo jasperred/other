@@ -1,0 +1,7 @@
+package com.ami.ec.channel.bean.pluginManager;
+
+public interface TaskQueueServices {
+	
+	public void readTaskQueue();
+
+}

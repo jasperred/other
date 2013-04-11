@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="ami_ifs_ws"
+  id="myeclipse.1315361528593"
+  context-root="/ami_ifs_ws"
+  j2ee-spec="5.0"
+  archive="ami_ifs_ws.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="order-ricoh" extends="json-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="serviceStatusListAction" class="baseAction"
+			method="serviceStatusList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceTypeListAction" class="baseAction"
+			method="serviceTypeList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="faultChildListAction" class="faultAndPartAction"
+			method="childList">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/orderByRicoh/faultByAjax.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="symptomListAction" class="faultAndPartAction"
+			method="symptomList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="actionListAction" class="faultAndPartAction"
+			method="actionList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="causeListAction" class="faultAndPartAction"
+			method="causeList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="locationListAction" class="faultAndPartAction"
+			method="locationList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="targetListAction" class="faultAndPartAction"
+			method="targetList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="newServiceOrderAction" class="serviceOrderNewAction"
+			method="createServiceOrder">
+			<result name="success" type="redirect">viewNewServiceInfoAction?serviceId=${serviceId}</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewNewServiceInfoAction" class="serviceOrderInfoAction"
+			method="serviceOrderInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderInfoByShop.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceInfoByShopAction" class="serviceOrderInfoAction"
+			method="serviceOrderInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderInfoByShop.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveServiceInfoByShopAction" class="saveServiceOrderInfoAction"
+			method="saveServiceOrderInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveServiceItemInfoByShopAction" class="saveServiceOrderInfoAction"
+			method="saveServiceOrderItem">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="cancelServiceByShopAction" class="cancelServiceOrderAction"
+			method="cancelServiceOrder">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewServiceByShopAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderSearchByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchServiceByShopAction" class="serviceOrderSearchAction"
+			method="searchServiceOrder">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceProcessByShopAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderProcessByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>		
+		<action name="searchServiceByStatusAction" class="serviceOrderSearchAction"
+			method="searchServiceOrderByStatus">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="applyPartOrMachineAction" class="applyServiceAction"
+			method="serviceApply">
+			<result name="success" type="redirect">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="applyServiceInfoByShopAction" class="applyServiceInfoAction"
+			method="serviceApplyInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplyInfoByShop.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="applyServiceInfoByRcnAction" class="applyServiceInfoAction"
+			method="serviceApplyInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplyInfoByRcn.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewSearchApplyServiceByShopAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplySearchByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewSearchApplyServiceByRcnAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplySearchByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchApplyServiceByShopAction" class="searchApplyServiceAction"
+			method="searchServiceApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplyResultByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchApplyServiceByRcnAction" class="searchApplyServiceAction"
+			method="searchServiceApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/applyByRicoh/orderApplyResultByRch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="auditedApplyServiceAction" class="auditedApplyServiceAction"
+			method="auditedServiceApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="reApplyServiceAction" class="auditedApplyServiceAction"
+			method="reApplyService">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveServiceReturnInfoAction" class="applyServiceInfoAction"
+			method="saveReturnInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="finishServiceOrderAction" class="serviceOrderFinishAction"
+			method="finishServiceOrder">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewServiceByRcnAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderSearchByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchServiceByRcnAction" class="serviceOrderSearchAction"
+			method="searchServiceOrder">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderResultByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceInfoByRcnAction" class="serviceOrderInfoAction"
+			method="serviceOrderInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">application/orderByRicoh/orderInfoByRcn.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="deliveryByRcnAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="deliverySearchByRcnAction" class="searchDeliveryServiceAction"
+			method="searchServiceDeliveryByRcn">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByRcnResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceCspcInfoByRcnAction" class="serviceDeliveryInfoAction"
+			method="serviceDeliveryInfoByCspc">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryInfoByRcn.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceScmInfoByRcnAction" class="serviceDeliveryInfoAction"
+			method="serviceDeliveryInfoByScm">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryInfoByRcn.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryByScmAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByScm.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliverySearchByScmAction" class="searchDeliveryServiceAction"
+			method="searchServiceDeliveryByScm">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByScmResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceInfoByScmAction" class="serviceDeliveryInfoAction"
+			method="serviceDeliveryInfoByScm">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryInfoByScm.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceConfirmByScmAction" class="serviceDeliveryConfirmAction"
+			method="serviceDeliveryConfirmByScm">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<!-- 缺货 -->
+		<action name="deliveryServiceWaitByScmAction" class="serviceDeliveryConfirmAction"
+			method="serviceDeliveryWaitByScm">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="applyRateAction" class="applyServiceAction"
+			method="serviceRateApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="checkApplyRateAction" class="applyServiceAction"
+			method="checkServiceRateApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchDeliveryByScmAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderSearchByScm.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryByCspcAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByCspc.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliverySearchByCspcAction" class="searchDeliveryServiceAction"
+			method="searchServiceDeliveryByCspc">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryByCspcResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceInfoByCspcAction" class="serviceDeliveryInfoAction"
+			method="serviceDeliveryInfoByCspc">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderDeliveryInfoByCspc.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/orderByRicoh/orderNewError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deliveryServiceConfirmByCspcAction" class="serviceDeliveryConfirmAction"
+			method="serviceDeliveryConfirmByCspc">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<!-- 缺货 -->
+		<action name="deliveryServiceWaitByCspcAction" class="serviceDeliveryConfirmAction"
+			method="serviceDeliveryWaitByCspc">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchDeliveryByCspcAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/deliveryByRicoh/orderSearchByCspc.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="deliveryServiceBackApplyAction" class="serviceDeliveryBackApplyAction"
+			method="serviceDeliveryBackApply">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewNoVisitServiceOrderAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/serviceVisitByRicoh/searchNoVisit.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchNoVisitServiceOrderAction" class="searchNoVisitServiceOrderAction"
+			method="searchNoVisit">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/serviceVisitByRicoh/noVisitResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewServiceVisitAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/serviceVisitByRicoh/searchVisit.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchServiceVisitAction" class="searchServiceVisitAction"
+			method="searchVisit">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/serviceVisitByRicoh/visitResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="visitServiceOrderAction" class="visitServiceOrderAction"
+			method="visitServiceOrder">
+			<result name="success" type="redirect">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+	</package>
+</struts>

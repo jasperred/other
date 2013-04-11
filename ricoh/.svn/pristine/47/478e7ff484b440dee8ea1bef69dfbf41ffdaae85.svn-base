@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="TempExceed"
+		table="temp_exceed"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="ExceedDbid"
+			column="exceed_dbid"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="EditDate"
+			column="edit_date"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ExternOrderKey"
+			column="extern_order_key"
+			type="string"
+			not-null="false"
+			length="100"
+		/>
+		<property
+			name="CustomerNo"
+			column="customer_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="CustomerName"
+			column="customer_name"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="ItemNo"
+			column="item_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ItemDescription"
+			column="item_description"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="SerialNo"
+			column="serial_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Flag"
+			column="flag"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="WriterTime"
+			column="writer_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ReaderTime"
+			column="reader_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ImportUser"
+			column="import_user"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		
+
+	</class>	
+</hibernate-mapping>

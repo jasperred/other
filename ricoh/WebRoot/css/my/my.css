@@ -1,0 +1,162 @@
+body
+{
+	font-family: "宋体",arial, helvetica, sans-serif;
+	font-size: 11px;
+}
+
+/* TABLE
+ * ========================================================================= */
+table {
+  border: 1px solid #888;
+  border-collapse: collapse;
+  line-height: 1;
+  margin: 1em auto;
+  width: 100%;
+}
+
+/* Caption
+ * ------------------------------------------------------------------------- */
+table caption {
+  font-size: .8em;
+  font-weight: bold;
+}
+
+/* Header
+ * ------------------------------------------------------------------------- */
+table thead {
+  background: #aaa url(../../images/jquery/treeTable/bg-table-thead.png) repeat-x top left;
+  font-size: .9em;
+}
+
+table thead tr th {
+  border: 1px solid #DDDDDD;
+  font-weight: normal;
+  padding: .3em 1.67em .1em 1.67em;
+  text-align: left;
+}
+
+/* Body
+ * ------------------------------------------------------------------------- */
+table tbody tr td {
+  cursor: default;
+  padding: .3em 1.5em;
+}
+
+table tbody tr.even {
+  background: #f3f3f3;
+}
+
+table tbody tr.odd {
+  background: #fff;
+}
+
+table span {
+  background-position: center left;
+  background-repeat: no-repeat;
+  padding: .2em 0 .2em 1.5em;
+}
+table span.file {
+  background-image: url(../../images/jquery/treeTable/page_white_text.png);
+}
+
+table span.folder {
+  background-image: url(../../images/jquery/treeTable/folder.png);
+}
+table {
+    -moz-box-sizing: border-box;
+    border-collapse: separate;
+    border-spacing: 1px;
+    display: table;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-indent: 0;
+}
+table.listing {
+    border-bottom-color: #9097A9;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color-ltr-source: physical;
+    border-left-color-rtl-source: physical;
+    border-left-color-value: #9097A9;
+    border-left-style-ltr-source: physical;
+    border-left-style-rtl-source: physical;
+    border-left-style-value: solid;
+    border-left-width-ltr-source: physical;
+    border-left-width-rtl-source: physical;
+    border-left-width-value: 1px;
+    border-right-color-ltr-source: physical;
+    border-right-color-rtl-source: physical;
+    border-right-color-value: #9097A9;
+    border-right-style-ltr-source: physical;
+    border-right-style-rtl-source: physical;
+    border-right-style-value: solid;
+    border-right-width-ltr-source: physical;
+    border-right-width-rtl-source: physical;
+    border-right-width-value: 1px;
+    border-top-color: #9097A9;
+    border-top-style: solid;
+    border-top-width: 1px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    width: 100%;
+}
+th {
+    display: table-cell;
+    font-weight: bold;
+    padding-bottom: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    vertical-align: inherit;
+}
+table.listing th {
+    -moz-background-clip: border;
+    -moz-background-origin: padding;
+    -moz-background-size: auto auto;
+    background-attachment: scroll;
+    background-color: #9097A9;
+    background-image: none;
+    background-position: 0 0;
+    background-repeat: repeat;
+    color: #FFFFFF;
+    line-height: 28px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+}
+table.listing th {
+    border-bottom-color: #FFFFFF;
+    border-bottom-style: solid;
+    border-bottom-width: 0;
+    border-left-color-ltr-source: physical;
+    border-left-color-rtl-source: physical;
+    border-left-color-value: #FFFFFF;
+    border-left-style-ltr-source: physical;
+    border-left-style-rtl-source: physical;
+    border-left-style-value: solid;
+    border-left-width-ltr-source: physical;
+    border-left-width-rtl-source: physical;
+    border-left-width-value: 0;
+    border-right-color-ltr-source: physical;
+    border-right-color-rtl-source: physical;
+    border-right-color-value: #FFFFFF;
+    border-right-style-ltr-source: physical;
+    border-right-style-rtl-source: physical;
+    border-right-style-value: solid;
+    border-right-width-ltr-source: physical;
+    border-right-width-rtl-source: physical;
+    border-right-width-value: 0;
+    border-top-color: #FFFFFF;
+    border-top-style: solid;
+    border-top-width: 0;
+    text-align: center;
+}
+
+

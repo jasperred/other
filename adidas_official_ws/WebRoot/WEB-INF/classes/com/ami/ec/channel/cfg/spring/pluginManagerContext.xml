@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-autowire="byName">
+	<!-- 配置数据源 -->
+	<bean id="dataSourcePluginManager" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close"><property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="jdbcUrl" value="jdbc:sqlserver://localhost:1433;DatabaseName=PlugInManager"/>
+        <property name="maxPoolSize" value="50"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="idleConnectionTestPeriod" value="30"/>
+        <property name="acquireIncrement" value="5"/>
+        <property name="properties">
+            <props>
+                <prop key="user">sa</prop>
+                <prop key="password">123</prop>
+            </props>
+        </property>
+	</bean>
+
+
+	<!-- 配置SessionFactory，使用上面的数据源作为数据库连接 -->
+	<bean id="sqlSessionFactoryPluginManager" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourcePluginManager" />
+	</bean>
+	<bean id="sqlSessionPluginManager" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+
+	<!-- 配置Mapper，相当于dao -->
+	<bean id="globalDefineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ec.channel.dao.pluginManager.GlobalDefineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="ifDefineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.IfDefineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="ifDefineLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.IfDefineLineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="taskDefineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.TaskDefineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="taskQueueMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.TaskQueueMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="execTaskMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.ExecTaskMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="batLogMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.BatLogMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	<bean id="batRecordMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.pluginManager.BatRecordMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryPluginManager" />
+	</bean>
+	
+	<bean id="taskQueueService" class="com.ami.ec.channel.bean.pluginManager.impl.TaskQueueServicesImpl">
+		<property name="execTaskMapper" ref="execTaskMapper" />
+		<property name="taskQueueMapper" ref="taskQueueMapper" />
+	</bean>
+	<bean id="jobtask_taskQueueService"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="taskQueueService" />
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod">
+			<value>readTaskQueue</value>
+		</property>
+	</bean>
+
+	<!-- 读取任务 -->
+	<bean id="doTime_taskQueueService" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="jobtask_taskQueueService" />
+		</property>
+		<!-- cron表达式 此处定义为一直触发执行任务 -->
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序   -->
+	<bean id="startQuertz" lazy-init="true" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="doTime_taskQueueService" />
+			</list>
+		</property>
+	</bean><!-- 总管理类结束   -->
+</beans>

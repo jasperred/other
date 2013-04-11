@@ -1,0 +1,26 @@
+﻿.btn {
+BORDER-RIGHT: #002D96 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #002D96 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 12px; FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#FFFFFF, EndColorStr=#9DBCEA); BORDER-LEFT: #002D96 1px solid; CURSOR: hand; COLOR: black; PADDING-TOP: 2px; BORDER-BOTTOM: #002D96 1px solid
+}
+.textbox {
+BORDER-RIGHT: #999999 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #999999 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 12px; FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#FFFFFF, EndColorStr=#eaeaea); BORDER-LEFT: #999999 1px solid; CURSOR: hand; COLOR: black; PADDING-TOP: 2px; BORDER-BOTTOM: #999999 1px solid
+}
+body
+{
+	font-size:12px;
+	background-color:#FFFFFF;
+	padding:5px;
+	
+}
+.tableclass td
+{
+font-size:12px;
+padding:5px;
+}
+
+/*分页控件样式*/
+.pageslist{ text-align:center; padding:10px;}
+.pages { color:red;font-weight:bold; font-size:11px;}
+.pages  .item a{padding: 1px 6px;font-size: 13px;} /*数字页索引样式*/
+.pages .cpb {color:red;padding: 1px 6px;font-size: 13px;} /*当前页样式*/
+.pages a { text-decoration:none;padding: 0 5px; border: 1px solid #ddd;margin:0 2px; color:#000;font-weight:normal;}
+.pages a:hover { background-color: #E61636; color:#fff;border:1px solid #E61636; text-decoration:none;font-weight:normal; }

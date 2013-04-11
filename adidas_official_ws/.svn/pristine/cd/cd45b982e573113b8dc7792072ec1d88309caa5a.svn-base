@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	>
+	<!-- 配置数据源 -->
+	<bean id="dataSourceAsp" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close"><property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="jdbcUrl" value="jdbc:sqlserver://10.122.122.1:1433;DatabaseName=EcAsp"/>
+        <property name="maxPoolSize" value="50"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="idleConnectionTestPeriod" value="30"/>
+        <property name="acquireIncrement" value="5"/>
+        <property name="properties">
+            <props>
+                <prop key="user">sa</prop>
+                <prop key="password">1qaz@WSX3edc</prop>
+            </props>
+        </property>
+	</bean>
+
+
+	<!-- 配置SessionFactory，使用上面的数据源作为数据库连接 -->
+	<bean id="sqlSessionFactoryAsp" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceAsp" />
+	</bean>
+	<bean id="sqlSessionAsp" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryAsp" />
+	</bean>
+
+	<!-- 配置Mapper，相当于dao -->
+	<bean id="aspIfsIOrderHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ec.channel.dao.asp.AspIfsIOrderHeadMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspIfsIOrderLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspIfsIOrderLineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspIfsIUnitItemMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspIfsIUnitItemMasterMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspIfsIUnitSkuMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspIfsIUnitSkuMasterMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspIfsKeyMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspIfsKeyMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspIfsUnitMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspIfsUnitMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>	
+	<bean id="aspOrderHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspOrderHeadMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>	
+	<bean id="aspOrderLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspOrderLineMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="aspZlogOrderHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.AspZlogOrderHeadMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="wsOrderSearchMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.ami.ec.channel.dao.asp.WsOrderSearchMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+	</bean>
+	<bean id="forAspServices" class="com.ami.ec.channel.bean.asp.impl.ForAspServicesImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAsp" />
+		<property name="aspIfsIOrderHeadMapper" ref="aspIfsIOrderHeadMapper" />
+		<property name="aspIfsIOrderLineMapper" ref="aspIfsIOrderLineMapper" />
+		<property name="aspIfsIUnitItemMasterMapper" ref="aspIfsIUnitItemMasterMapper" />
+		<property name="aspIfsIUnitSkuMasterMapper" ref="aspIfsIUnitSkuMasterMapper" />
+		<property name="aspIfsKeyMapper" ref="aspIfsKeyMapper" />
+		<property name="aspIfsUnitMapper" ref="aspIfsUnitMapper" />
+		<property name="aspOrderHeadMapper" ref="aspOrderHeadMapper" />
+		<property name="aspOrderLineMapper" ref="aspOrderLineMapper" />
+		<property name="aspZlogOrderHeadMapper" ref="aspZlogOrderHeadMapper" />
+		<property name="wsOrderSearchMapper" ref="wsOrderSearchMapper" />
+	</bean>
+</beans>

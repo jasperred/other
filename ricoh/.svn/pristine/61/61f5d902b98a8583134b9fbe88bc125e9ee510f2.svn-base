@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="TempCompanyMachineTypeRef"
+		table="temp_company_machine_type_ref"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="CompanyNo"
+			column="company_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="CompanyName"
+			column="company_name"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="MachineCd"
+			column="machine_cd"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="MachineType"
+			column="machine_type"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="Flag"
+			column="flag"
+			type="string"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="TempNo"
+			column="temp_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="WriterTime"
+			column="writer_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ReaderTime"
+			column="reader_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ImportUser"
+			column="import_user"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+
+	</class>	
+</hibernate-mapping>

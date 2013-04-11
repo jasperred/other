@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="invoice" extends="json-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="viewInvoiceByShopAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceSearchByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="previewInvoiceListByRcnAction" class="previewInvoiceListAction"
+			method="previewInvoice">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/invoiceByRicoh/invoiceSettlementResultByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchInvoiceByShopAction" class="searchInvoiceAction"
+			method="searchInvoice">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceResultByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="invoiceInfoByShopAction" class="invoiceInfoAction"
+			method="invoiceInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceInfoByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="invoiceSettlementByRcnAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceSettlementByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewInvoiceByRcnAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceSearchByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchInvoiceByRcnAction" class="searchInvoiceAction"
+			method="searchInvoice">
+			<result name="success" type="dispatcher">
+				<param name="location">application/invoiceByRicoh/invoiceResultByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="invoiceInfoByRcnAction" class="invoiceInfoAction"
+			method="invoiceInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/invoiceByRicoh/invoiceInfoByRcn.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="previewInvoiceInfoByRcnAction" class="invoiceInfoAction"
+			method="previewInvoiceInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/invoiceByRicoh/invoiceInfoByRcn.jsp</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/invoiceByRicoh/invoiceError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="generateInvoiceInfoByRcnAction" class="invoiceInfoAction"
+			method="generateInvoice">
+			<result name="success" type="redirect">
+				<param name="location">invoiceInfoByRcnAction.action?invoiceId=${invoiceId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/invoiceByRicoh/invoiceError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="saveInvoiceInfoByRcnAction" class="invoiceInfoAction"
+			method="saveInvoice">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="completeInvoiceByRcnAction" class="invoiceInfoAction"
+			method="completeInvoice">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+	</package>
+</struts>

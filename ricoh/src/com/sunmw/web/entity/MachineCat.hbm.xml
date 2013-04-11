@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="MachineCat"
+		table="machine_cat"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="machine_cat_id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="MachineCatName"
+			column="machine_cat_name"
+			type="string"
+			not-null="false"
+			length="60"
+		/>
+		<property
+			name="ServiceDate"
+			column="service_date"
+			type="big_decimal"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="MachineCatCode"
+			column="machine_cat_code"
+			type="string"
+			not-null="false"
+			length="60"
+		/>
+		<property
+			name="Sort"
+			column="sort"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://cxf.apache.org/jaxws 
+        http://cxf.apache.org/schemas/jaxws.xsd">
+<!-- Import Apache CXF Bean Definition -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    <!-- 配置c3p0数据源 -->
+    <bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="jdbcUrl" value="jdbc:sqlserver://localhost:1433;DatabaseName=ifs" />
+        <property name="user" value="asp" />
+        <property name="password" value="$ami4Sql" />
+        <property name="initialPoolSize" value="10" />
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="30" />
+        <property name="acquireIncrement" value="10" />
+        <property name="maxIdleTime" value="10" />
+        <property name="maxStatements" value="0" />
+    </bean>
+    
+	<!-- 配置SessionFactory，使用上面的c3p0数据源作为数据库连接 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="c3p0DataSource"/>
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<!-- 事物管理配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="c3p0DataSource" />
+	</bean>
+
+	<!-- 配置事务拦截器 -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<!-- 事务拦截器bean依赖注入一个事务管理器 -->
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+			<!-- 下面定义事务的传播属性 -->
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+    <!-- 自动代理 --> 
+    <bean id="autoproxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"> 
+       <property name="beanNames"> 
+          <list> 
+             <value>*Mapper</value> 
+          </list> 
+       </property> 
+       <property name="interceptorNames"> 
+          <list> 
+             <value>transactionInterceptor</value> 
+          </list> 
+       </property> 
+    </bean>
+	<!-- 配置Mapper，相当于dao -->
+	<bean id="ifsStatusMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsStatusMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="ifsTypeMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsTypeMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="ifsKeyMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsKeyMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="ifsUnitMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsUnitMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="ifsDbLogMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsDbLogMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="iOrderHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IOrderHeadMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="iOrderLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IOrderLineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="oOrderHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.OOrderHeadMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="oOrderLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.OOrderLineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="unitSkuExpandsMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.UnitSkuExpandsMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="oUnitItemMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.OUnitItemMasterMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="oUnitSkuMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.OUnitSkuMasterMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+	<bean id="iUnitItemMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IUnitItemMasterMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="iUnitSkuMasterMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IUnitSkuMasterMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="iDnIfHeadMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IDnIfHeadMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="iDnIfLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IDnIfLineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="fieldMapMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.FieldMapMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="fieldMapLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.FieldMapLineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="globalDefineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.GlobalDefineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="valueMapMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.ValueMapMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="valueMapLineMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.ValueMapLineMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<bean id="ifsServiceMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ami.ifs.dao.IfsServiceMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="security"
+		class="com.ami.ifs.ws.common.Security">
+		<property name="ifsUnitMapper" ref="ifsUnitMapper"/>		
+		<property name="ifsKeyMapper" ref="ifsKeyMapper"/>
+	</bean>
+	<bean id="orderServiceForAsp"
+		class="com.ami.ifs.ws.order.impl.OrderServiceForAspImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>		
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="iOrderHeadMapper" ref="iOrderHeadMapper"/>
+		<property name="iOrderLineMapper" ref="iOrderLineMapper"/>
+		<property name="oOrderHeadMapper" ref="oOrderHeadMapper"/>
+		<property name="oOrderLineMapper" ref="oOrderLineMapper"/>
+		<property name="iDnIfHeadMapper" ref="iDnIfHeadMapper"/>
+		<property name="iDnIfLineMapper" ref="iDnIfLineMapper"/>
+		<property name="ifsServiceMapper" ref="ifsServiceMapper"/>
+	</bean>
+	<bean id="orderServiceForEc"
+		class="com.ami.ifs.ws.order.impl.OrderServiceForEcImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>	
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="iOrderHeadMapper" ref="iOrderHeadMapper"/>
+		<property name="iOrderLineMapper" ref="iOrderLineMapper"/>
+		<property name="oOrderHeadMapper" ref="oOrderHeadMapper"/>
+		<property name="oOrderLineMapper" ref="oOrderLineMapper"/>
+		<property name="iDnIfHeadMapper" ref="iDnIfHeadMapper"/>
+		<property name="iDnIfLineMapper" ref="iDnIfLineMapper"/>
+	</bean>
+	<!-- Expose SurveyWebService -->
+	<jaxws:server id="orderServiceWsForAsp"
+		serviceClass="com.ami.ifs.ws.order.OrderServiceForAsp" address="/OrderServiceForAsp">
+		<jaxws:serviceBean>
+			<ref bean="orderServiceForAsp" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<jaxws:server id="orderServiceWsForEc"
+		serviceClass="com.ami.ifs.ws.order.OrderServiceForEc" address="/OrderServiceForEc">
+		<jaxws:serviceBean>
+			<ref bean="orderServiceForEc" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<bean id="inventoryAndPriceServiceForAsp"
+		class="com.ami.ifs.ws.item.impl.InventoryAndPriceServiceForAspImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>	
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="oUnitItemMasterMapper" ref="oUnitItemMasterMapper"/>
+		<property name="oUnitSkuMasterMapper" ref="oUnitSkuMasterMapper"/>
+	</bean>
+	<bean id="inventoryAndPriceServiceForEc"
+		class="com.ami.ifs.ws.item.impl.InventoryAndPriceServiceForEcImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>	
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="oUnitItemMasterMapper" ref="oUnitItemMasterMapper"/>
+		<property name="oUnitSkuMasterMapper" ref="oUnitSkuMasterMapper"/>
+	</bean>
+	<bean id="itemServiceForAsp"
+		class="com.ami.ifs.ws.item.impl.ItemServiceForAspImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>	
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="iUnitItemMasterMapper" ref="iUnitItemMasterMapper"/>
+		<property name="iUnitSkuMasterMapper" ref="iUnitSkuMasterMapper"/>
+	</bean>
+	<bean id="itemServiceForEc"
+		class="com.ami.ifs.ws.item.impl.ItemServiceForEcImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="security" ref="security"/>	
+		<property name="ifsDbLogMapper" ref="ifsDbLogMapper"/>
+		<property name="iUnitItemMasterMapper" ref="iUnitItemMasterMapper"/>
+		<property name="iUnitSkuMasterMapper" ref="iUnitSkuMasterMapper"/>
+	</bean>
+	
+	<bean id="ifsConfigServices"
+		class="com.ami.ifs.ws.ifsConfig.impl.IfsConfigServicesImpl">
+		<property name="security" ref="security"/>	
+		<property name="ifsServiceMapper" ref="ifsServiceMapper"/>
+		<property name="fieldMapMapper" ref="fieldMapMapper"/>
+		<property name="fieldMapLineMapper" ref="fieldMapLineMapper"/>
+		<property name="globalDefineMapper" ref="globalDefineMapper"/>
+		<property name="valueMapMapper" ref="valueMapMapper"/>
+		<property name="valueMapLineMapper" ref="valueMapLineMapper"/>
+	</bean>
+	<!-- Expose SurveyWebService -->
+	<jaxws:server id="inventoryAndPriceServiceWsForAsp"
+		serviceClass="com.ami.ifs.ws.item.InventoryAndPriceServiceForAsp" address="/InventoryAndPriceServiceForAsp">
+		<jaxws:serviceBean>
+			<ref bean="inventoryAndPriceServiceForAsp" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<jaxws:server id="inventoryAndPriceServiceWsForEc"
+		serviceClass="com.ami.ifs.ws.item.InventoryAndPriceServiceForEc" address="/InventoryAndPriceServiceForEc">
+		<jaxws:serviceBean>
+			<ref bean="inventoryAndPriceServiceForEc" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<jaxws:server id="itemServiceWsForAsp"
+		serviceClass="com.ami.ifs.ws.item.ItemServiceForAsp" address="/ItemServiceForAsp">
+		<jaxws:serviceBean>
+			<ref bean="itemServiceForAsp" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<jaxws:server id="itemServiceWsForEc"
+		serviceClass="com.ami.ifs.ws.item.ItemServiceForEc" address="/ItemServiceForEc">
+		<jaxws:serviceBean>
+			<ref bean="itemServiceForEc" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+	<jaxws:server id="ifsConfigWs"
+		serviceClass="com.ami.ifs.ws.ifsConfig.IfsConfigServices" address="/IfsConfigWs">
+		<jaxws:serviceBean>
+			<ref bean="ifsConfigServices" />
+		</jaxws:serviceBean>
+	</jaxws:server>
+</beans>

@@ -1,0 +1,733 @@
+#taoshow .tab a,#taoshow .tab span,span.icon {
+	background: url(img/tab.png) repeat-x;
+}
+
+#taoshow .tab li a {
+	background-position: 0 -27px;
+}
+
+#taoshow .tab li a span {
+	background-position: 100% -27px;
+}
+
+#taoshow .tab .selected a {
+	background-position: 0 0;
+}
+
+#taoshow .tab .selected a span {
+	background-position: 100% 0;
+}
+
+#taoshow .cat span.icon {
+	background-position: 0 -60px;
+}
+
+#taoshow .collapse span.icon {
+	background-position: -16px -60px;
+}
+
+#taoshow .expand span.icon {
+	background-position: -32px -60px;
+}
+
+#taoshow span.close {
+	position: absolute;
+	z-index: 99;
+	right: 5px;
+	top: 5px;
+	cursor: pointer;
+	background-position: -128px -60px;
+}
+
+.flash .long-btn .icon {
+	background-position: -48px -60px;
+}
+
+.video .long-btn .icon {
+	background-position: -64px -60px;
+}
+
+#taoshow span.icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+#taoshow .long-btn {
+	text-decoration: none;
+}
+
+#taoshow .tab {
+	position: relative;
+	height: 27px;
+	margin-bottom: -1px;
+	padding-left: 20px;
+}
+
+#taoshow .tab li {
+	float: left;
+	margin-right: 3px;
+}
+
+#taoshow .tab li a {
+	float: left;
+	height: 27px;
+	padding-left: 10px;
+	line-height: 27px;
+}
+
+#taoshow .tab a {
+	color: #404040;
+}
+
+#taoshow .tab li a span {
+	display: block;
+	padding-right: 10px;
+}
+
+#taoshow .tab .selected a {
+	font-weight: 700;
+}
+
+#taoshow .panel {
+	border: solid 1px #ADD2FF;
+}
+
+#taoshow .upload-btn {
+	width: 318px;
+	height: 106px;
+	margin: 0 auto 15px;
+	cursor: pointer;
+	background: url(img/upload_btn.png) no-repeat;
+}
+
+#taoshow .hk {
+	background-position: -318px 0;
+}
+
+#taoshow .upload-btn a {
+	display: none;
+}
+
+.photo .panel .photo-main {
+	padding: 20px 10px;
+}
+
+.photo .filter {
+	margin: 0 0 10px 5px;
+}
+
+#taoshow .list {
+	zoom: 1;
+}
+
+#taoshow .list:after {
+	content: '\0020';
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+#taoshow .list li {
+	float: left;
+	margin: 0 5px;
+	padding-bottom: 15px;
+}
+
+#taoshow .list li a {
+	border: solid 3px #cfcfcf;
+	display: block;
+}
+
+.photo .list li {
+	height: 106px; *
+	height: auto;
+}
+
+.photo .list li a {
+	display: table-cell !important;
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	vertical-align: middle; *
+	display: block; *
+	font-size: 74px;
+}
+
+.photo .list li img {
+	max-width: 100px;
+	max-height: 100px;
+}
+
+#taoshow .list li img {
+	vertical-align: middle;
+}
+
+#taoshow .list .selected a,#taoshow .list li a:hover {
+	border-color: #FFC097;
+}
+
+#taoshow .ending {
+	margin-top: 15px;
+	text-align: center;
+}
+
+#taoshow .ending span {
+	margin-right: 10px;
+}
+
+.capacity-tips {
+	zoom: 1;
+	margin: 5px auto 0;
+	text-align: center;
+}
+
+.capacity-tips em {
+	color: #f00;
+}
+
+.capacity-tips .tips {
+	float: none;
+	display: inline-block;
+}
+
+.upload-flash-box {
+	position: absolute;
+	z-index: 999;
+	width: 0;
+	height: 0;
+}
+
+.upload-list {
+	width: 100%;
+}
+
+.upload-list li { *
+	float: left; *
+	width: 100%;
+	height: 22px;
+	line-height: 22px;
+	border-bottom: solid 1px #ddd;
+	zoom: 1;
+	overflow: hidden;
+}
+
+.upload-list li:after {
+	content: "";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.upload-list .thead {
+	height: 20px;
+	line-height: 20px;
+	border-bottom-color: #c1c1c1;
+	background-color: #f5f5f5;
+}
+
+.upload-list .tbody {
+	height: 230px;
+}
+
+.upload-list .file-name,.upload-list .file-size,.upload-list .file-del,.upload-list .file-insert,.upload-list .file-preview,.upload-list .file-percent
+	{
+	float: left;
+	width: 20%;
+	text-align: center;
+	display: none;
+}
+
+.upload-list .file-name {
+	display: block;
+	width: 39.5%;
+	overflow: hidden;
+	text-align: left;
+}
+
+.upload-list .file-name span,.upload-list .file-name a {
+	display: inline-block;
+	margin-left: 2em;
+	padding: 0 6px;
+	color: #000;
+	text-decoration: none;
+	cursor: text;
+}
+
+.upload-list .file-name form {
+	margin-left: 2em;
+}
+
+.upload-list .file-del .icon {
+	cursor: pointer;
+	background-position: -80px -60px;
+}
+
+.upload-list .file-del a:hover .icon {
+	background-position: -96px -60px;
+}
+
+.upload-list .file-name form {
+	display: none;
+}
+
+.upload-list .file-size,.upload-list .file-del {
+	display: block;
+	width: 20%;
+}
+
+.upload-before .file-size {
+	width: 40%;
+}
+
+.upload-after .file-insert,.upload-after .file-preview,.upload-after .file-del,.upload-after .file-percent
+	{
+	display: block;
+}
+
+.upload-after .tbody .file-insert,.upload-after .tbody .file-preview,.upload-after .tbody .file-del,.upload-after .tbody .uploading .file-del
+	{
+	visibility: hidden;
+}
+
+.upload-after .tbody .complete .file-insert,.upload-after .tbody .complete .file-preview,.upload-after .tbody .file-del
+	{
+	visibility: visible;
+}
+
+.upload-after .file-del,.upload-after .file-insert,.upload-after .file-preview,.upload-after .file-percent
+	{
+	width: 10%;
+}
+
+.upload-after .file-preview .icon {
+	background-position: -112px -60px;
+}
+
+.upload-after li li {
+	background: url(img/processing.png) no-repeat -1000px 0;
+}
+
+.upload-after li .complete,.upload-after li .failure {
+	background-image: none;
+}
+
+.upload-after .complete .file-percent .count,.upload-after .failure .file-percent .count,.upload-after .file-percent .icon
+	{
+	display: none !important;
+}
+
+.upload-after .complete .file-percent .icon {
+	display: inline-block !important;
+	background-position: -144px -60px;
+}
+
+.upload-after .failure .file-percent .icon {
+	display: inline-block !important;
+	background-position: -160px -60px;
+}
+
+.upload-after .tbody .file-name input {
+	width: 10em;
+	height: 14px;
+	padding: 0 3px;
+	background-color: #FFFFD3;
+}
+
+.upload-after .tbody .file-name button {
+	height: 22px;
+	margin-left: .15em;
+}
+
+.upload-after .tbody .complete .file-name a:hover {
+	background-color: #FEFFD3;
+}
+
+.upload-after .tbody .file-name-edit a {
+	display: none;
+}
+
+.upload-after .tbody .file-name-edit form {
+	display: block;
+}
+
+.upload-list .tfoot { *
+	width: auto;
+	height: 32px;
+	padding: 0 2em;
+	line-height: 32px;
+	border-bottom: 1px solid #c1c1c1;
+	background-color: #ddd;
+}
+
+.upload-list .tfoot .count {
+	float: right;
+}
+
+.upload-list .tfoot select {
+	width: 8em;
+}
+
+.upload-list .tfoot .addmore {
+	position: relative;
+	z-index: 1;
+	margin-left: .5em;
+	color: #36c;
+	cursor: pointer;
+}
+
+.upload-list .tfoot .addmore span {
+	width: 4em;
+	height: 32px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.upload-list .tfoot .addcat,.upload-list .tfoot .addcating,.upload-list .tfoot .addcating form
+	{
+	display: inline;
+}
+
+.upload-list .tfoot .addcat form,.upload-list .tfoot .addcating span {
+	display: none;
+}
+
+.upload-list .tfoot .addcat span {
+	color: #36c;
+	cursor: pointer;
+}
+
+.upload-list .tfoot form input {
+	background-color: #FFFFD3;
+	height: 14px;
+	padding: 0 3px;
+	width: 8em;
+}
+
+.popup {
+	display: table-cell;
+	width: 160px;
+	height: 160px;
+	border: solid 1px #a3a3a3;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #fff; *
+	display: block; *
+	font-family: Arial !important; *
+	font-size: 140px; *
+	line-height: 1;
+}
+
+.popup img {
+	vertical-align: middle;
+}
+
+#taoshow .panel {
+	height: 360px;
+}
+
+#taoshow .grid-c2 .msg24 {
+	margin: 20px;
+}
+
+#taoshow .col-sub {
+	width: 169px;
+	height: 100%;
+	padding-left: 18px;
+	border-right: solid 1px #ADD2FE;
+}
+
+#taoshow .provide {
+	margin: 15px 0 20px;
+}
+
+#taoshow .cats {
+	width: 165px;
+	height: 300px;
+	overflow: auto;
+}
+
+#taoshow .cats li {
+	padding: 2px 0 4px;
+}
+
+#taoshow .cats ul {
+	padding-left: 16px;
+}
+
+#taoshow .cats li li {
+	padding: 2px 0;
+}
+
+#taoshow .cats .selected {
+	font-weight: 700;
+}
+
+#taoshow .collapse ul {
+	display: none;
+}
+
+#taoshow .main-wrap {
+	padding: 15px 18px 15px 0;
+}
+
+#taoshow .main-wrap .filter {
+	position: relative;
+	z-index: 1;
+}
+
+#taoshow .main-wrap .filter .long-btn {
+	position: absolute;
+	top: 0;
+	right: 5em;
+}
+
+#taoshow .main-wrap .filter .help {
+	position: absolute;
+	top: 3px;
+	right: 0;
+}
+
+#taoshow .main-wrap .taxis {
+	height: 25px;
+	margin-top: 5px;
+}
+
+#taoshow .main-wrap .taxis select {
+	float: left;
+	margin: 5px 0 0 5px;
+}
+
+#taoshow .main-wrap .taxis .long-btn {
+	float: right;
+}
+
+#taoshow .main-wrap .list {
+	margin-top: 5px;
+}
+
+#taoshow .flash-url {
+	margin: 35px 0 0 110px;
+	padding-left: 11em;
+}
+
+#taoshow .flash-url .label {
+	float: left;
+	margin-left: -11em;
+}
+
+#taoshow .flash-url .text {
+	width: 30em;
+	height: 80px;
+	padding: 1px 0 2px 2px;
+}
+
+#taoshow .flash-url .msg {
+	margin-top: 5px;
+}
+
+#taoshow .flash-url .ending {
+	text-align: left;
+}
+
+.pagination .page-bottom {
+	float: right;
+}
+
+.pagination {
+	height: 22px;
+	font-size: 12px;
+	font-family: Tahoma;
+}
+
+.page-top:after,.page-bottom:after {
+	content: "";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.page-top,.page-bottom {
+	zoom: 1;
+}
+
+.page-mini {
+	padding-top: 3px;
+}
+
+.pagination a,.page-info,.page-prev,.page-cur,.page-start,.page-end,.page-break
+	{
+	float: left;
+	width: 20px;
+	height: 20px;
+	margin: 0 3px 0 0;
+	overflow: hidden;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	line-height: 20px;
+}
+
+.page-mini a,.page-mini .page-cur,.page-mini .page-prev,.page-mini .page-cur,.page-mini .page-start,.page-mini .page-end,.page-mini .page-break
+	{
+	height: 14px;
+	width: auto;
+	padding: 0 2px;
+	line-height: 16px;
+}
+
+.pagination a {
+	border: 1px solid #ccc;
+	background-color: #fff;
+}
+
+.page-mini a {
+	border: none;
+	background-color: transparent;
+}
+
+.pagination .page-100 {
+	width: 26px;
+}
+
+.page-mini .page-100 {
+	width: auto;
+}
+
+.pagination a:link {
+	color: #03c;
+	text-decoration: none;
+}
+
+.pagination a:visited {
+	color: #953597;
+	text-decoration: none;
+}
+
+.pagination a:hover,.pagination a:active {
+	color: #fff;
+	background-color: #09f;
+	text-decoration: none;
+}
+
+.pagination .mini a:hover,.pagination .mini a:active {
+	color: #f50;
+	background-color: transparent;
+}
+
+.pagination .page-cur,.pagination .mini-page .page-cur {
+	margin: 0;
+	line-height: 12px;
+	font-weight: 700;
+	color: #f60;
+	vertical-align: super;
+}
+
+.page-break {
+	font-family: SimSun;
+	border-width: 0;
+	width: 22px;
+	height: 22px;
+}
+
+.pagination .page-trigger {
+	background-position: -83px -43px;
+}
+
+.pagination .page-trigger:hover,.pagination .page-trigger:active {
+	background-position: -47px -43px;
+}
+
+.page-prev,.page-next,.page-start,.page-end,.page-skip button,.page-trigger
+	{
+	background-image: url(img/pagination.gif);
+	background-color: #fff;
+	background-repeat: no-repeat;
+}
+
+.page-mini .page-prev,.page-mini .page-next {
+	background-color: #fff;
+}
+
+.page-info,.page-mini .page-info {
+	width: auto;
+	color: #a0a0a4;
+	letter-spacing: 1px;
+}
+
+.pagination .page-prev {
+	border: 1px solid #ccc;
+	background-position: 6px 5px;
+}
+
+.page-mini .page-prev {
+	width: 14px;
+	padding: 0;
+	background-position: 4px 3px;
+}
+
+.pagination .page-start {
+	border: 1px solid #ccc;
+	background-position: 6px -11px;
+}
+
+.page-mini .page-start {
+	width: 14px;
+	padding: 0;
+	background-position: 4px -13px;
+}
+
+.pagination .page-next,.pagination .page-end {
+	padding: 0 12px 0 5px;
+	width: auto;
+	border: 1px solid #ccc;
+	background-position: -52px 5px;
+}
+
+.page-mini .page-next,.page-mini .page-end {
+	width: 42px;
+	padding: 0;
+	border: 1px solid #ccc;
+	background-position: 2px -29px;
+}
+
+.pagination .page-end {
+	background-position: -52px -11px;
+}
+
+.page-mini .page-end {
+	background-position: -60px -29px;
+}
+
+.page-skip {
+	float: left;
+	padding: 0 0 0 8px;
+}
+
+.page-skip input {
+	margin: 0 2px;
+	vertical-align: text-bottom;
+	font-size: 12px;
+	padding: 0;
+	width: 24px;
+}
+
+.page-skip button {
+	cursor: pointer;
+	border: none;
+	margin: 0 0 0 8px;
+	vertical-align: text-bottom;
+	width: 31px;
+	height: 15px;
+	background-position: 0 100%;
+}
+
+.page-prev span,.page-start span,.page-mini .page-next span,.page-mini .page-end span,.page-skip button span
+	{
+	display: none;
+}

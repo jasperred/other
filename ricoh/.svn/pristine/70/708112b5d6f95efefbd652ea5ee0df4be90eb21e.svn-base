@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="ServiceDeliveryFile"
+		table="service_delivery_file"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<composite-id name="Id" class="ServiceDeliveryFilePK">
+			<key-property
+				name="ServiceDeliveryId"
+				column="service_delivery_id"
+				type="integer"
+			/>
+			<key-property
+				name="FileType"
+				column="file_type"
+				type="string"
+			/>
+		</composite-id>
+
+		<property
+			name="FileUrl"
+			column="file_url"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="FileSize"
+			column="file_size"
+			type="integer"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="FileName"
+			column="file_name"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

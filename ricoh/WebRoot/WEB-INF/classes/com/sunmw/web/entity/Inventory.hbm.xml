@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="Inventory"
+		table="inventory"
+		dynamic-update="true"
+		dynamic-insert="true"
+		optimistic-lock="version"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="inv_id"
+		>
+			<generator class="identity"/>
+		</id>
+		<version column="version" name="version" type="java.lang.Integer"/>
+
+		<property
+			name="InvType"
+			column="inv_type"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="InvCate"
+			column="inv_cate"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="SkuCd"
+			column="sku_cd"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="SkuName"
+			column="sku_name"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="Quantity"
+			column="quantity"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="AvailableQuantity"
+			column="available_quantity"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="InvStatus"
+			column="inv_status"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="WhId"
+			column="wh_id"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

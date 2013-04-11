@@ -1,0 +1,120 @@
+body {
+	font-family: "����", Lucida Grande, Lucida Sans, Arial, Helvetica,
+		sans-serif;
+	font-size: 80%;
+	background-color: #EEE;
+}
+
+h1 {
+	font-size: 2em;
+	font-weight: normal;
+	margin: 1em 0 0.75em;
+	page-break-after: avoid;
+}
+
+h2 {
+	color: navy;
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 1.25em 0 0.75em;
+	page-break-after: avoid;
+}
+
+h3 {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 0 0 1ex;
+	white-space: nowrap;
+	page-break-after: avoid;
+}
+
+ul {
+	padding: 0;
+	padding-bottom: 20px; /* give whitespace at bottom for FF */
+	margin: 0;
+	list-style-type: square;
+}
+
+li {
+	padding: 0;
+	margin: 0;
+	margin: 0.5ex 0 0.5ex 1.2em;
+	list-style-type: none;
+}
+
+#menu ul{
+	list-style-type:none;
+	}
+
+#menu ul li{
+	/*background: url(../images/system/box_bg.png) no-repeat;*/
+	background-position: 0 -89px;
+	background-repeat: repeat-x;
+	color: block;
+	padding: 0.5em;
+	margin-right:0;
+	margin-left:0;
+	padding-left:0; 
+	height: 15px;
+	width:100%;
+}
+
+#menu li:hover {
+	background: #5F9EA0;
+}
+/***ajax loading***/
+#loading {
+	position: absolute;
+	left: 45%;
+	top: 45%; 
+}
+
+textarea {
+	margin: 3px 5px 2px 5px; *
+	margin: 3px 5px 2px 5px;
+	padding: 3px 2px 0 3px;
+	width: 50%;
+	height: 5em;
+	font-size: 12px;
+	border: 1px solid #a7a6aa;
+	background: white url(../../images/system/input-bg.png) 0 0 no-repeat;
+}
+
+input {
+	color: #666;
+	font-size: 12px;
+	background: white url(../../images/system/input-bg.png) 0 0 no-repeat;
+}
+
+input.text {
+	margin: 0 0 0 5px;
+	padding: 3px 2px 0 3px;
+	height: 16px;
+	border: 1px solid #a7a6aa;
+}
+
+input.pure-text {
+	background: none;
+	border: 1px solid white;
+	color: #333;
+}
+
+input.checkbox {
+	margin: 0 4px 0 5px; *
+	margin: 0 4px 0 0;
+	height: 18px;
+	vertical-align: middle;
+	background: none;
+}
+
+input.radio {
+	margin: 0 4px 0 5px; *
+	margin: 0 4px 0 0;
+	height: 24px;
+	vertical-align: middle;
+	background: none;
+}
+
+input.align-right {
+	text-align: right;
+}

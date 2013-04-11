@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="fileupload" extends="struts-default">
+	<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="machineFileUploadAction" class="fileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">1048576</param>
+			</interceptor-ref> 
+			<param name ="allowedTypes">
+                    image/bmp,image/png,image/gif,image/jpeg
+            </param>
+			<result name="success" type="redirect">
+				<param name="location">machineImportAction.action</param>
+			</result>
+			<result name="error" type="redirect">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="serviceOrderFileUploadAction" class="serviceOrderFileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">524288</param>
+			</interceptor-ref> 
+			<result name="success" type="redirect">
+				<param name="location">viewNewServiceInfoAction?serviceId=${serviceId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<result name="input" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="serviceApplyFileUploadAction" class="serviceApplyFileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref> 
+			<result name="success" type="redirect">
+				<param name="location">applyServiceInfoByRcnAction?serviceApplyId=${serviceApplyId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="serviceDeliveryFileUploadByScmAction" class="serviceDeliveryFileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref> 
+			<result name="success" type="redirect">
+				<param name="location">deliveryServiceInfoByScmAction?serviceDeliveryId=${serviceDeliveryId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceDeliveryFileUploadByCspcAction" class="serviceDeliveryFileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref> 
+			<result name="success" type="redirect">
+				<param name="location">deliveryServiceInfoByCspcAction?serviceDeliveryId=${serviceDeliveryId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="invoiceFileUploadAction" class="invoiceFileUploadAction"
+			method="fileUpload">
+			<interceptor-ref name="fileUploadStack" >
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref> 
+			<result name="success" type="redirect">
+				<param name="location">invoiceInfoByRcnAction?invoiceId=${invoiceId}</param>
+			</result>
+			<result name="error" type="dispatcher">
+				<param name="location">/application/common/fileUploadError.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="fileDeleteAction" class="fileUploadAction"
+			method="fileDelete">
+			<result name="success" type="dispatcher">
+				<param name="location">application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+	</package>
+</struts>

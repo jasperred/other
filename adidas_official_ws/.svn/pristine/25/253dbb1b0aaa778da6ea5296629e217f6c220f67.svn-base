@@ -1,0 +1,701 @@
+package com.ami.ec.channel.bean.officialPlugin.impl;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.transaction.Transaction;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.log4j.Logger;
+
+import com.ami.ec.channel.bean.officialPlugin.OfficialPluginServices;
+import com.ami.ec.channel.dao.officialPlugin.ItemMapper;
+import com.ami.ec.channel.dao.officialPlugin.OfficialArticleTempMapper;
+import com.ami.ec.channel.dao.officialPlugin.OfficialServicesMapper;
+import com.ami.ec.channel.dao.officialPlugin.OrderHeadMapper;
+import com.ami.ec.channel.dao.officialPlugin.OrderLineMapper;
+import com.ami.ec.channel.dao.officialPlugin.SkuMapper;
+import com.ami.ec.channel.domain.officialPlugin.Item;
+import com.ami.ec.channel.domain.officialPlugin.ItemExample;
+import com.ami.ec.channel.domain.officialPlugin.OfficialArticleTemp;
+import com.ami.ec.channel.domain.officialPlugin.OfficialArticleTempExample;
+import com.ami.ec.channel.domain.officialPlugin.OrderHead;
+import com.ami.ec.channel.domain.officialPlugin.OrderHeadExample;
+import com.ami.ec.channel.domain.officialPlugin.OrderLine;
+import com.ami.ec.channel.domain.officialPlugin.Sku;
+import com.ami.ec.channel.domain.officialPlugin.SkuExample;
+import com.ami.ec.channel.io.impl.ReturnOrder;
+import com.ami.ec.channel.io.impl.SalesOrder;
+import com.ami.ec.channel.util.WebConfigProperties;
+import com.ami.ec.channel.util.WebUtil;
+
+public class OfficialPluginServicesImpl implements OfficialPluginServices {
+	static Logger logger = Logger.getLogger(OfficialPluginServicesImpl.class);
+	private SqlSessionFactory sqlSessionFactory;
+	private OrderHeadMapper orderHeadMapper;
+	private OrderLineMapper orderLineMapper;
+	private OfficialServicesMapper officialServicesMapper;
+	private OfficialArticleTempMapper officialArticleTempMapper;
+	private ItemMapper itemMapper;
+	private SkuMapper skuMapper;
+	private Long pjId;
+
+	public SqlSessionFactory getSqlSessionFactory() {
+		return sqlSessionFactory;
+	}
+
+	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	public OrderHeadMapper getOrderHeadMapper() {
+		return orderHeadMapper;
+	}
+
+	public void setOrderHeadMapper(OrderHeadMapper orderHeadMapper) {
+		this.orderHeadMapper = orderHeadMapper;
+	}
+
+	public OrderLineMapper getOrderLineMapper() {
+		return orderLineMapper;
+	}
+
+	public void setOrderLineMapper(OrderLineMapper orderLineMapper) {
+		this.orderLineMapper = orderLineMapper;
+	}
+
+	public OfficialServicesMapper getOfficialServicesMapper() {
+		return officialServicesMapper;
+	}
+
+	public void setOfficialServicesMapper(
+			OfficialServicesMapper officialServicesMapper) {
+		this.officialServicesMapper = officialServicesMapper;
+	}
+
+	public OfficialArticleTempMapper getOfficialArticleTempMapper() {
+		return officialArticleTempMapper;
+	}
+
+	public void setOfficialArticleTempMapper(
+			OfficialArticleTempMapper officialArticleTempMapper) {
+		this.officialArticleTempMapper = officialArticleTempMapper;
+	}
+
+	public ItemMapper getItemMapper() {
+		return itemMapper;
+	}
+
+	public void setItemMapper(ItemMapper itemMapper) {
+		this.itemMapper = itemMapper;
+	}
+
+	public SkuMapper getSkuMapper() {
+		return skuMapper;
+	}
+
+	public void setSkuMapper(SkuMapper skuMapper) {
+		this.skuMapper = skuMapper;
+	}
+
+	public Long getPjId() {
+		return pjId;
+	}
+
+	public void setPjId(Long pjId) {
+		this.pjId = pjId;
+	}
+
+	public Map uploadReturnOrder(ReturnOrder ro, Long storeId,Long pjId) {
+		Map result = new HashMap();
+		// 查找相关订单是否已进入过系统
+		OrderHeadExample ex = new OrderHeadExample();
+		com.ami.ec.channel.domain.officialPlugin.OrderHeadExample.Criteria criteria = ex
+				.createCriteria();
+		criteria.andOrderNoEqualTo(ro.getOrderNo());
+		criteria.andStoreIdEqualTo(storeId);
+		if(WebUtil.isNotNull(pjId))
+			criteria.andPjIdEqualTo(pjId);
+		List<OrderHead> ohList = orderHeadMapper.selectByExample(ex);// 事务控制
+		SqlSession session = sqlSessionFactory.openSession();
+		TransactionFactory transactionFactory = new JdbcTransactionFactory();
+		Transaction newTransaction = transactionFactory.newTransaction(session
+				.getConnection(), false);
+		Date date = new Date();
+		// 如果已进入系统按状态不同来更新订单
+		if (!WebUtil.isNullForList(ohList)) {
+			OrderHead oh2 = ohList.get(0);
+			OrderHead oh = new OrderHead();
+			oh.setOrderHeadId(oh2.getOrderHeadId());
+			if (WebUtil.isNotNull(ro.getOrderStatus()))
+				oh.setOrderStatus(ro.getOrderStatus());
+			if (WebUtil.isNotNull(ro.getRealGoodsFee()))
+				oh.setRealGoodsFee(ro.getRealGoodsFee());
+			if (WebUtil.isNotNull(ro.getPostFee()))
+				oh.setPostFee(ro.getPostFee());
+			if (WebUtil.isNotNull(ro.getRemark()))
+				oh.setRemark(ro.getRemark());
+			if (WebUtil.isNotNull(ro.getPostType()))
+				oh.setPostType(ro.getPostType());
+			if (WebUtil.isNotNull(ro.getDeliverCompany()))
+				oh.setDeliverCompany(ro.getDeliverCompany());
+			if (WebUtil.isNotNull(ro.getDeliverNo()))
+				oh.setDeliverNo(ro.getDeliverNo());
+			if (WebUtil.isNotNull(ro.getLastModifyTime()))
+				oh.setLastModifyTime(ro.getLastModifyTime());
+			oh.setMtime(date);
+			session
+					.update(
+							"com.ami.ec.channel.dao.officialPlugin.OrderHeadMapper.updateByPrimaryKeySelective",
+							oh);
+		}
+		// 如果未进入系统则直接插入
+		else {
+			OrderHead oh = new OrderHead();
+			oh.setOrderType("RETURN");
+			oh.setCtime(date);
+			oh.setCreateTime(ro.getCreateTime());
+			oh.setLastModifyTime(ro.getLastModifyTime());
+			oh.setChannelType(ro.getChannelType());
+			oh.setOrderNo(ro.getOrderNo());
+			oh.setRefOrderNo(ro.getOrigOrderNo());
+			oh.setBuyerId(ro.getBuyerID());
+			oh.setRealGoodsFee(ro.getRealGoodsFee());
+			oh.setPostFee(ro.getPostFee());
+			oh.setLastModifyTime(ro.getLastModifyTime());
+			oh.setOrderStatus(ro.getOrderStatus());
+			oh.setRemark(ro.getRemark());
+			oh.setPostType(ro.getPostType());
+			oh.setDeliverCompany(ro.getDeliverCompany());
+			oh.setDeliverNo(ro.getDeliverNo());
+			oh.setStoreId(storeId);
+			oh.setPjId(pjId);
+			session
+					.insert(
+							"com.ami.ec.channel.dao.officialPlugin.OrderHeadMapper.insertSelective",
+							oh);
+			OrderLine ol = new OrderLine();
+			ol.setOrderNo(ro.getOrderNo());
+			ol.setItemCd(ro.getArticleNo());
+			ol.setOrderLineNo(ro.getLineNo());
+			ol.setSkuCd(ro.getSkuCode());
+			ol.setNum(ro.getNum());
+			ol.setRealprice(ro.getOrderRealPrice());
+			session
+					.insert(
+							"com.ami.ec.channel.dao.officialPlugin.OrderLineMapper.insertSelective",
+							ol);
+		}
+		try {
+			newTransaction.commit();
+		} catch (SQLException e) {
+			result.put("Flag", "error");
+			result.put("Message", e.getMessage());
+		} finally {
+			try {
+				newTransaction.close();
+				session.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		result.put("Flag", "success");
+		return result;
+	}
+
+	public Map uploadSalesOrder(SalesOrder so, Long storeId,Long pjId) {
+		Map result = new HashMap();
+		// 查找相关订单是否已进入过系统
+		OrderHeadExample ex = new OrderHeadExample();
+		com.ami.ec.channel.domain.officialPlugin.OrderHeadExample.Criteria criteria = ex
+				.createCriteria();
+		criteria.andOrderNoEqualTo(so.getOrderNo());
+		criteria.andStoreIdEqualTo(storeId);
+		List<OrderHead> ohList = orderHeadMapper.selectByExample(ex);// 事务控制
+		SqlSession session = sqlSessionFactory.openSession();
+		TransactionFactory transactionFactory = new JdbcTransactionFactory();
+		Transaction newTransaction = transactionFactory.newTransaction(session
+				.getConnection(), false);
+		Date date = new Date();
+		// 如果已进入系统按状态不同来更新订单
+		if (!WebUtil.isNullForList(ohList)) {
+			OrderHead oh2 = ohList.get(0);
+			OrderHead oh = new OrderHead();
+			oh.setOrderHeadId(oh2.getOrderHeadId());
+			if (WebUtil.isNotNull(so.getDeliverCompany()))
+				oh.setDeliverCompany(so.getDeliverCompany());
+			if (WebUtil.isNotNull(so.getGoodsDiscountFee()))
+				oh.setGoodsDiscountFee(so.getGoodsDiscountFee());
+			if (WebUtil.isNotNull(so.getGoodsFee()))
+				oh.setGoodsFee(so.getGoodsFee());
+			if (WebUtil.isNotNull(so.getInvoiceAddress()))
+				oh.setInvoiceAddress(so.getInvoiceAddress());
+			if (WebUtil.isNotNull(so.getInvoiceComment()))
+				oh.setInvoiceComment(so.getInvoiceComment());
+			if (WebUtil.isNotNull(so.getInvoiceNeed()))
+				oh.setInvoiceNeed(so.getInvoiceNeed());
+			if (WebUtil.isNotNull(so.getInvoiceTitle()))
+				oh.setInvoiceTitle(so.getInvoiceTitle());
+			if (WebUtil.isNotNull(so.getOrderStatus()))
+				oh.setOrderStatus(so.getOrderStatus());
+			if (WebUtil.isNotNull(so.getPayTime()))
+				oh.setPayTime(so.getPayTime());
+			if (WebUtil.isNotNull(so.getPostFee()))
+				oh.setPostFee(so.getPostFee());
+			if (WebUtil.isNotNull(so.getPostType()))
+				oh.setPostType(so.getPostType());
+			if (WebUtil.isNotNull(so.getRealGoodsFee()))
+				oh.setRealGoodsFee(so.getRealGoodsFee());
+			if (WebUtil.isNotNull(so.getReceiverAddress()))
+				oh.setReceiverAddress(so.getReceiverAddress());
+			if (WebUtil.isNotNull(so.getReceiverCity()))
+				oh.setReceiverCity(so.getReceiverCity());
+			if (WebUtil.isNotNull(so.getReceiverDistrinct()))
+				oh.setReceiverDistrinct(so.getReceiverDistrinct());
+			if (WebUtil.isNotNull(so.getReceiverMobile()))
+				oh.setReceiverMobile(so.getReceiverMobile());
+			if (WebUtil.isNotNull(so.getReceiverName()))
+				oh.setReceiverName(so.getReceiverName());
+			if (WebUtil.isNotNull(so.getReceiverPhone()))
+				oh.setReceiverPhone(so.getReceiverPhone());
+			if (WebUtil.isNotNull(so.getReceiverState()))
+				oh.setReceiverState(so.getReceiverState());
+			if (WebUtil.isNotNull(so.getReceiverZip()))
+				oh.setReceiverZip(so.getReceiverZip());
+			if (WebUtil.isNotNull(so.getRemark()))
+				oh.setRemark(so.getRemark());
+			if (WebUtil.isNotNull(so.getLastModifyTime()))
+				oh.setLastModifyTime(so.getLastModifyTime());
+			oh.setMtime(date);
+			session
+					.update(
+							"com.ami.ec.channel.dao.officialPlugin.OrderHeadMapper.updateByPrimaryKeySelective",
+							oh);
+		}
+		// 如果未进入系统则直接插入
+		else {
+			OrderHead oh = new OrderHead();
+			oh.setOrderType("SALE");
+			oh.setCtime(date);
+			oh.setCreateTime(so.getCreateTime());
+			oh.setLastModifyTime(so.getLastModifyTime());
+			oh.setChannelType(so.getChannelType());
+			oh.setOrderNo(so.getOrderNo());
+			oh.setBuyerId(so.getBuyerID());
+			oh.setBuyerEmail(so.getBuyerEmail());
+			oh.setBuyerName(so.getBuyerName());
+			oh.setDeliverCompany(so.getDeliverCompany());
+			oh.setGoodsDiscountFee(so.getGoodsDiscountFee());
+			oh.setGoodsFee(so.getGoodsFee());
+			oh.setInvoiceAddress(so.getInvoiceAddress());
+			oh.setInvoiceComment(so.getInvoiceComment());
+			oh.setInvoiceNeed(so.getInvoiceNeed());
+			oh.setInvoiceTitle(so.getInvoiceTitle());
+			oh.setOrderStatus(so.getOrderStatus());
+			oh.setPayTime(so.getPayTime());
+			oh.setPostFee(so.getPostFee());
+			oh.setPostType(so.getPostType());
+			oh.setRealGoodsFee(so.getRealGoodsFee());
+			oh.setReceiverAddress(so.getReceiverAddress());
+			oh.setReceiverCity(so.getReceiverCity());
+			oh.setReceiverDistrinct(so.getReceiverDistrinct());
+			oh.setReceiverMobile(so.getReceiverMobile());
+			oh.setReceiverName(so.getReceiverName());
+			oh.setReceiverPhone(so.getReceiverPhone());
+			oh.setReceiverState(so.getReceiverState());
+			oh.setReceiverZip(so.getReceiverZip());
+			oh.setRemark(so.getRemark());
+			oh.setStoreId(storeId);
+			oh.setPjId(pjId);
+			session
+					.insert(
+							"com.ami.ec.channel.dao.officialPlugin.OrderHeadMapper.insertSelective",
+							oh);
+			List<com.ami.ec.channel.io.impl.OrderLine> olList = so
+					.getOrderLines();
+			for (com.ami.ec.channel.io.impl.OrderLine l : olList) {
+				OrderLine ol = new OrderLine();
+				ol.setOrderNo(so.getOrderNo());
+				ol.setCreateTime(date);
+				ol.setDiscountprice(l.getDiscountPrice());
+				ol.setDiscountpriceamt(l.getDiscountPriceAmt());
+				ol.setItemCd(l.getArticleNo());
+				ol.setLineIndex(l.getLineIndex());
+				ol.setNum(l.getNum());
+				ol.setOrderLineNo(l.getLineNo());
+				ol.setOrderprice(l.getOrderPrice());
+				ol.setOrderpriceamt(l.getOrderPriceAmt());
+				ol.setRealprice(l.getRealPrice());
+				ol.setRealpriceamt(l.getRealPriceAmt());
+				ol.setSalePrice(l.getSalePrice());
+				ol.setSkuCd(l.getSkuCode());
+				ol.setSkuProp1(l.getColorName());
+				ol.setSkuProp2(l.getSizeName());
+				ol.setTitle(l.getArticleTitle());
+				session
+						.insert(
+								"com.ami.ec.channel.dao.officialPlugin.OrderLineMapper.insertSelective",
+								ol);
+			}
+
+		}
+		try {
+			newTransaction.commit();
+		} catch (SQLException e) {
+			result.put("Flag", "error");
+			result.put("Message", e.getMessage());
+		} finally {
+			try {
+				newTransaction.close();
+				session.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		result.put("Flag", "success");
+		return result;
+	}
+
+	public Map exportArticleMasterCsv(Map param) {
+		Map result = new HashMap();
+		Long pjId = (Long) param.get("PjId");
+		Long storeId = (Long) param.get("StoreId");
+		//查询需要导出Article
+		Map p = new HashMap();
+		p.put("Flag", 0);
+		p.put("PjId", pjId);
+		//p.put("StoreId", storeId);
+		List<Map> articleList = null;
+		try {
+			articleList = this.officialServicesMapper.searchArticle(p);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			result.put("Flag", "error");
+			result.put("Message", e.getMessage());
+			return result;
+		}
+		if(WebUtil.isNullForList(articleList))
+		{
+			result.put("Flag", "success");
+			result.put("Message", "无导出内容");
+			return result;
+		}
+		//生成CSV文件
+		Date date = new Date();
+		String path = WebConfigProperties.getProperties("article.save.path");
+		String fileName = "AMI_Official_Articel_"+WebUtil.formatDateString(date, "yyyyMMddHHmmss")+".csv";
+		String[] headers = new String[]{"Channel Type","Article No","Article Title","Platform Category","Seller Category","Orig Price","Sale Price","Postage Type","Article Images","Color Images","Description","Model No","Gender","Brand","reverse_4","Sku Code","Color Name","Size Name","Sku Price","Sku Stock","SkuReverse1","SkuReverse2","SkuReverse3","SkuReverse4","SkuReverse5"};
+		String[] fields = new String[]{"ChannelType","ArticleNo","ArticleTitle","PlatformCategory","SellerCategory","OrigPrice","SalePrice","PostageType","ArticleImages","ColorImages","Description","ModelNo","Gender","Brand","Reverse4","SkuCode","ColorName","SizeName","SkuPrice","SkuStock","SkuReverse1","SkuReverse2","SkuReverse3","SkuReverse4","SkuReverse5"};
+		boolean b = WebUtil.exportCSV(headers, fields, articleList, path, fileName);
+		if(!b)
+		{
+			result.put("Flag", "error");
+			result.put("Message", "文件生成失败");
+			return result;
+		}
+		//更新临时表Flag标记为1
+		OfficialArticleTempExample te = new OfficialArticleTempExample();
+		OfficialArticleTempExample.Criteria tc = te.createCriteria();
+		tc.andFlagEqualTo(new Integer(0));
+		OfficialArticleTemp record = new OfficialArticleTemp();
+		record.setFlag(1);		
+		record.setPjId(pjId);
+		//record.setStoreId(storeId);
+		this.officialArticleTempMapper.updateByExampleSelective(record, te);
+		//对删除标记的商品将Item中的Flag标记为-1
+		p.put("Flag", -1);
+		List<Map> deleteArticleList =  officialServicesMapper.searchArticle(p);
+		if(!WebUtil.isNullForList(deleteArticleList))
+		{
+			List<String> itemCdList = new ArrayList();
+			for(Map m:deleteArticleList)
+			{
+				itemCdList.add((String)m.get("ArticleNo"));
+			}
+			Item item = new Item();
+			item.setFlag(-1);
+			ItemExample ie = new ItemExample();
+			ItemExample.Criteria ic = ie.createCriteria();
+			ic.andItemCdIn(itemCdList);
+			this.itemMapper.updateByExampleSelective(item, ie);
+		}
+		//更新OfficialPlugin的Item和Sku
+		try {
+			Map<String,Map> itemMap = new HashMap();
+			for(Map m:articleList)
+			{
+				Map item = itemMap.get(m.get("ArticleNo"));
+				if(item==null)
+				{
+					item = new HashMap();				
+					item.put("Item", m);
+				}
+				List skuList = (List) item.get("SkuList");
+				if(skuList==null)
+					skuList = new ArrayList();
+				skuList.add(m);
+				item.put("SkuList", skuList);
+				itemMap.put((String)m.get("ArticleNo"), item);
+			}
+			Iterator<String> iter = itemMap.keySet().iterator();
+			while(iter.hasNext())
+			{
+				Map isMap = itemMap.get(iter.next());
+				Map item = (Map)isMap.get("Item");
+				List<Map> skuList = (List)isMap.get("SkuList");
+				ItemExample ie = new ItemExample();
+				ItemExample.Criteria ic = ie.createCriteria();
+				ic.andItemCdEqualTo((String)item.get("ArticleNo"));
+				int count = this.itemMapper.countByExample(ie);
+				
+				Item i = new Item();
+				i.setItemCd((String)item.get("ArticleNo"));
+				i.setDescription((String)item.get("Description"));
+				i.setImages((String)item.get("ArticleImages"));
+				i.setOrigPrice((BigDecimal)item.get("OrigPrice"));
+				i.setReserve1((String)item.get("ModelNo"));
+				i.setReserve2((String)item.get("Gender"));
+				i.setReserve3((String)item.get("Brand"));
+				i.setReserve4((String)item.get("Reverse4"));
+				i.setSalePrice((BigDecimal)item.get("SalePrice"));
+				i.setSellerCategory((String)item.get("SellerCategory"));
+				i.setTitle((String)item.get("ArticleTitle"));
+				i.setStoreId(storeId);
+				i.setPjId(pjId);
+				i.setFlag(1);
+				if(count>0)
+				{
+					i.setMtime(date);
+					this.itemMapper.updateByExampleSelective(i, ie);
+				}
+				else
+				{
+					i.setCtime(date);
+					this.itemMapper.insertSelective(i);
+				}
+				for(Map sku:skuList)
+				{
+					Sku s = new Sku();
+					s.setItemCd((String)sku.get("ArticleNo"));
+					s.setPrice((BigDecimal)sku.get("SkuPrice"));
+					s.setReserve1((String)sku.get("SkuReverse1"));
+					s.setReserve2((String)sku.get("SkuReverse2"));
+					s.setReserve3((String)sku.get("SkuReverse3"));
+					s.setReserve4((String)sku.get("SkuReverse4"));
+					s.setSkuCd((String)sku.get("SkuCode"));
+					s.setSkuProp1((String)sku.get("ColorName"));
+					s.setSkuProp2((String)sku.get("SizeName"));
+					s.setStock(0);
+					s.setMtime(date);
+					SkuExample se = new SkuExample();
+					SkuExample.Criteria sc = se.createCriteria();
+					sc.andItemCdEqualTo((String)sku.get("ArticleNo"));
+					sc.andSkuCdEqualTo((String)sku.get("SkuCode"));
+					int c = this.skuMapper.updateByExampleSelective(s, se);
+					if(c==0)
+					{
+						s.setMtime(null);
+						s.setCtime(date);
+						this.skuMapper.insertSelective(s);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		result.put("ArticleCsvName", fileName);
+		return result;
+	}
+
+	public Map inventoryUpdateItemList(Map param) {
+		Map result = new HashMap();
+		List<Map> l = this.officialServicesMapper.searchItemPriceOrStock(WebUtil.toMap("PjId", param.get("PjId"),"StoreId", param.get("StoreId"),"StockFlag",0));
+		if(WebUtil.isNullForList(l))
+			return result;
+		List invList = new ArrayList();
+		for(Map m:l)
+		{
+			List<Map> skuList = (List) m.get("skuList");
+			if(WebUtil.isNullForList(skuList))
+				continue;
+			StringBuffer skus = new StringBuffer();
+			for(Map s:skuList)
+			{
+				if(skus.length()>0)
+					skus.append(";");
+				skus.append(s.get("SkuCd")+":"+s.get("Stock"));
+			}
+			m.put("SkuStock", skus.toString());
+			invList.add(m);
+		}
+		result.put("InventoryList", invList);
+		return result;
+	}
+
+	public Map priceUpdateItemList(Map param) {
+		Map result = new HashMap();
+		List<Map> l = this.officialServicesMapper.searchItemPriceOrStock(WebUtil.toMap("PjId", param.get("PjId"),"StoreId", param.get("StoreId"),"PriceFlag",0));
+		if(WebUtil.isNullForList(l))
+			return result;
+		List priceList = new ArrayList();
+		for(Map m:l)
+		{
+			List<Map> skuList = (List) m.get("skuList");
+			if(WebUtil.isNullForList(skuList))
+				continue;
+			StringBuffer skus = new StringBuffer();
+			for(Map s:skuList)
+			{
+				if(skus.length()>0)
+					skus.append(";");
+				skus.append(s.get("SkuCd")+":"+s.get("Price"));
+			}
+			m.put("SkuPrice", skus.toString());
+			priceList.add(m);
+		}
+		result.put("PriceList", priceList);
+		return result;
+	}
+
+	public Map updateInventoryUpdateFlag(Map param) {
+		Map result = new HashMap();
+//		if(WebUtil.isNull(param.get("StoreId")))
+//		{
+//			result.put("Flag", "error");
+//			result.put("Message", "[StoreId] is null");
+//			return result;
+//		}
+		long storeId = Long.parseLong(param.get("StoreId").toString());
+		List<String> successList = (List) param.get("SuccessList");
+		List<String> errorList = (List) param.get("ErrorList");
+		if(!WebUtil.isNullForList(successList))
+		{
+			int count = successList.size();
+			int page = count/500+1;
+			for(int c=1;c<=page;c++)
+			{
+				int end = 0;
+				if(c*500>=count)
+					end = count;
+				else
+					end = c*500;
+				List<String> sl = successList.subList((c-1)*500, end);
+				if(WebUtil.isNullForList(sl))
+					break;
+				SkuExample se = new SkuExample();
+				SkuExample.Criteria sc = se.createCriteria();
+				sc.andSkuCdIn(sl);
+				Sku sku = new Sku();
+				sku.setMtime(new Date());
+				sku.setStockFlag(1);
+				this.skuMapper.updateByExampleSelective(sku, se);
+			}
+			
+		}if(!WebUtil.isNullForList(errorList))
+		{
+			int count = errorList.size();
+			int page = count/500+1;
+			for(int c=1;c<=page;c++)
+			{
+				int end = 0;
+				if(c*500>=count)
+					end = count;
+				else
+					end = c*500;
+				List<String> el = errorList.subList((c-1)*500, end);
+				if(WebUtil.isNullForList(el))
+					break;
+				SkuExample se = new SkuExample();
+				SkuExample.Criteria sc = se.createCriteria();
+				sc.andSkuCdIn(el);
+				Sku sku = new Sku();
+				sku.setMtime(new Date());
+				sku.setStockFlag(2);
+				this.skuMapper.updateByExampleSelective(sku, se);
+			}
+			
+		}
+		result.put("Flag", "success");
+		return result;
+	}
+
+	public Map updatePriceUpdateFlag(Map param) {
+		Map result = new HashMap();
+//		if(WebUtil.isNull(param.get("StoreId")))
+//		{
+//			result.put("Flag", "error");
+//			result.put("Message", "[StoreId] is null");
+//			return result;
+//		}
+		long storeId = Long.parseLong(param.get("StoreId").toString());
+		List<String> successList = (List) param.get("SuccessList");
+		List<String> errorList = (List) param.get("ErrorList");
+		if(!WebUtil.isNullForList(successList))
+		{
+			int count = successList.size();
+			int page = count/500+1;
+			for(int c=1;c<=page;c++)
+			{
+				int end = 0;
+				if(c*500>count)
+					end = count;
+				else
+					end = c*500;
+				List<String> sl = successList.subList((c-1)*500, end);
+				if(WebUtil.isNullForList(sl))
+					break;
+				SkuExample se = new SkuExample();
+				SkuExample.Criteria sc = se.createCriteria();
+				sc.andSkuCdIn(sl);
+				Sku sku = new Sku();
+				sku.setMtime(new Date());
+				sku.setPriceFlag(1);
+				this.skuMapper.updateByExampleSelective(sku, se);
+			}
+			
+		}if(!WebUtil.isNullForList(errorList))
+		{
+			int count = errorList.size();
+			int page = count/500+1;
+			for(int c=1;c<=page;c++)
+			{
+				int end = 0;
+				if(c*500>count)
+					end = count;
+				else
+					end = c*500;
+				List<String> el = errorList.subList((c-1)*500, end);
+				if(WebUtil.isNullForList(el))
+					break;
+				SkuExample se = new SkuExample();
+				SkuExample.Criteria sc = se.createCriteria();
+				sc.andSkuCdIn(el);
+				Sku sku = new Sku();
+				sku.setMtime(new Date());
+				sku.setPriceFlag(2);
+				this.skuMapper.updateByExampleSelective(sku, se);
+			}
+			
+		}
+		result.put("Flag", "success");
+		return result;
+	}
+
+	public Map callPriceUpdateSP(Map param) {
+		Map result = new HashMap();
+		this.officialServicesMapper.callPriceUpdateSP(WebUtil.toMap("PjId", param.get("PjId"),"StoreId", param.get("StoreId")));
+		result.put("Flag", "success");
+		return result;
+	}
+
+}

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="product" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.sunmw.web.common.interceptor.AuthorityInterceptor"></interceptor>
+			<interceptor-stack name="AuthorityStack">
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="login" type="redirect">viewLogin2.action</result>
+		</global-results>
+		<action name="viewMachineSearchByShopAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">application/productByRicoh/machineSearchByShop.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="checkMachineAction" class="machineInfoAction"
+			method="checkMachine">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineCheckInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineImportAction" class="machineImportAction"
+			method="viewMachineImport">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineImport.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="exceedImportAction" class="machineImportAction"
+			method="importExceed">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessageList.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="serviceRateImportAction" class="machineImportAction"
+			method="importServiceRate">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessageList.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="companyMachineTypeRefImportAction" class="machineImportAction"
+			method="importCompanyMachineTypeRef">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessageList.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewMachineAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchMachineAction" class="machineSearchAction"
+			method="searchMachine">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineInfoAction" class="machineInfoAction"
+			method="machineInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineInfoSaveAction" class="machineInfoAction"
+			method="saveMachine">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="checkMachineNoAction" class="machineInfoAction"
+			method="checkMachineNo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="viewMachineTypeAction" class="loginAction"
+			method="index">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineTypeSearch.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="searchMachineTypeAction" class="machineTypeSearchAction"
+			method="searchMachineType">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineTypeResult.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineTypeListAction" class="machineTypeSearchAction"
+			method="machineTypeList">
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineTypeInfoAction" class="machineTypeInfoAction"
+			method="machineTypeInfo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/productByRicoh/machineTypeInfo.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="machineTypeInfoSaveAction" class="machineTypeInfoAction"
+			method="saveMachineType">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="checkMachineCdAction" class="machineTypeInfoAction"
+			method="checkMachineNo">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		<action name="deleteMachineTypeAction" class="machineTypeInfoAction"
+			method="deleteMachineType">
+			<result name="success" type="dispatcher">
+				<param name="location">/application/common/ajaxMessage.jsp</param>
+			</result>
+			<interceptor-ref name="AuthorityStack"></interceptor-ref>
+		</action>
+		
+	</package>
+</struts>

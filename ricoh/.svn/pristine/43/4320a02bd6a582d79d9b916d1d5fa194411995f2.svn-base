@@ -1,0 +1,106 @@
+package com.sunmw.web.action.serviceOrder;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.sunmw.web.bean.serviceOrder.ServiceOrderServices;
+import com.sunmw.web.common.message.MessageInfo;
+import com.sunmw.web.entity.UserLogin;
+import com.sunmw.web.util.VerifyRequest;
+import com.sunmw.web.util.WebUtil;
+
+public class ServiceOrderNewAction {
+	
+	private ServiceOrderServices serviceOrderServices;
+	
+	private String machineNo;
+	private String serviceId;
+	private String serviceNo;
+	
+	private String message;
+	private String crumb;
+	
+	public ServiceOrderServices getServiceOrderServices() {
+		return serviceOrderServices;
+	}
+
+	public void setServiceOrderServices(ServiceOrderServices serviceOrderServices) {
+		this.serviceOrderServices = serviceOrderServices;
+	}
+
+	public String getMachineNo() {
+		return machineNo;
+	}
+
+	public void setMachineNo(String machineNo) {
+		this.machineNo = machineNo;
+	}
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public String getServiceNo() {
+		return serviceNo;
+	}
+
+	public void setServiceNo(String serviceNo) {
+		this.serviceNo = serviceNo;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getCrumb() {
+		return crumb;
+	}
+
+	public void setCrumb(String crumb) {
+		this.crumb = crumb;
+	}
+
+	public String createServiceOrder()
+	{
+		try {
+			Map session = ActionContext.getContext().getSession();
+			UserLogin ul = (UserLogin) session.get("LOGIN_INFO");
+			String userNo = ul.getUserNo();		
+			if(crumb==null||!VerifyRequest.verifyCrumb(userNo, crumb))
+			{
+				message = MessageInfo.Verify;
+				return "error";
+			}
+			Map param = new HashMap();
+			param.put("UserLogin", ul);
+			param.put("MachineNo", WebUtil.filterSpecialCharacters(machineNo));
+			Map<String,String> r = serviceOrderServices.createServiceOrder(param);
+			String flag = r.get("Flag");
+			if(flag.equals("ERROR"))
+			{
+				message = r.get("Message");
+				return "error";
+			}
+			else
+			{
+				message = null;
+				serviceId = r.get("ServiceId");
+				serviceNo = r.get("ServiceNo");
+			}
+		} catch (Exception e) {
+			message = MessageInfo.OperationType;
+			return "error";
+		}
+		return "success";
+	}
+
+}

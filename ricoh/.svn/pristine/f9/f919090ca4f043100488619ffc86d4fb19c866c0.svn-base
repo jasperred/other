@@ -1,0 +1,5 @@
+package=com.sunmw.web.entity
+databaseUrl=jdbc:sqlserver://localhost:1433;DatabaseName=ricoh_152
+driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+SourceLocation=\\ricoh\\src
+username=sa

@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="ServiceFault"
+		table="service_fault"
+	>
+		<meta attribute="sync-DAO">false</meta>
+
+		<meta attribute="sync-DAO">false</meta>
+
+		<id
+			name="Id"
+			type="integer"
+			column="service_fault_id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="ServiceId"
+			column="service_id"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="FaultType"
+			column="fault_type"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="FaultCateNo"
+			column="fault_cate_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="FaultNo"
+			column="fault_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="FaultName"
+			column="fault_name"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="MustMemo"
+			column="must_memo"
+			type="string"
+			not-null="false"
+			length="1"
+		/>
+		<property
+			name="Memo"
+			column="memo"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Content"
+			column="content"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

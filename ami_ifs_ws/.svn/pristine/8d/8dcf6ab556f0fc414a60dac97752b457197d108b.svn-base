@@ -1,0 +1,17 @@
+web.login.successivefailedlogins=5
+web.password.reset=Ricoh@2011
+web.password.hashtype=MD5
+web.password.modify=Y
+web.password.modify.start=2011-07-18
+web.password.modify.day=90
+######exceed##################
+file.import.exceed.path=D\:\\apache-tomcat-6.0.20\\webapps\\data\\import\\exceed\\
+######服务费##################
+file.import.srate.path=D\:\\apache-tomcat-6.0.20\\webapps\\data\\import\\service_rate\\
+######维修能力##################
+file.import.cmr.path=D\:\\apache-tomcat-6.0.20\\webapps\\data\\import\\company_machine_ref\\
+######备份文件位置######
+file.bak.path=D\:\\apache-tomcat-6.0.20\\webapps\\data\\bak\\\\
+######附件上传位置#########################
+file.upload.path=D\:\\apache-tomcat-6.0.20\\webapps\\data\\upload\\
+file.upload.url=http\://112.125.50.152/data/upload/

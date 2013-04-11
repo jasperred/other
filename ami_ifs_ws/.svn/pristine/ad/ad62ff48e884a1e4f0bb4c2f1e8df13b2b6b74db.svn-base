@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ami.ifs.dao.IfsServiceMapper">
+	<resultMap id="DnHeadAndDnLineMap" type="com.ami.ifs.dao.IDnIfHead">
+		<id column="Dn_if_head_id" property="dnIfHeadId" jdbcType="CHAR" />
+		<result column="Exec_flag" property="execFlag" jdbcType="SMALLINT" />
+		<result column="Store_Id" property="storeId" jdbcType="BIGINT" />
+		<result column="Operate_Type" property="operateType" jdbcType="VARCHAR" />
+		<result column="Ifs_A_Cd" property="ifsACd" jdbcType="VARCHAR" />
+		<result column="Ifs_C_Cd" property="ifsCCd" jdbcType="VARCHAR" />
+		<result column="Operate_Time" property="operateTime" jdbcType="TIMESTAMP" />
+		<result column="Timestamp" property="timestamp" jdbcType="TIMESTAMP" />
+		<result column="Orig_Order_No" property="origOrderNo" jdbcType="VARCHAR" />
+		<result column="Orig_Order_Type" property="origOrderType"
+			jdbcType="VARCHAR" />
+		<result column="Order_Status" property="orderStatus" jdbcType="VARCHAR" />
+		<result column="Col001" property="col001" jdbcType="VARCHAR" />
+		<result column="Col002" property="col002" jdbcType="VARCHAR" />
+		<result column="Col003" property="col003" jdbcType="VARCHAR" />
+		<result column="Col004" property="col004" jdbcType="VARCHAR" />
+		<result column="Col005" property="col005" jdbcType="VARCHAR" />
+		<result column="Col006" property="col006" jdbcType="VARCHAR" />
+		<result column="Col007" property="col007" jdbcType="VARCHAR" />
+		<result column="Col008" property="col008" jdbcType="VARCHAR" />
+		<result column="Col009" property="col009" jdbcType="VARCHAR" />
+		<result column="Col010" property="col010" jdbcType="VARCHAR" />
+		<result column="Col011" property="col011" jdbcType="VARCHAR" />
+		<result column="Col012" property="col012" jdbcType="VARCHAR" />
+		<result column="Col013" property="col013" jdbcType="VARCHAR" />
+		<result column="Col014" property="col014" jdbcType="VARCHAR" />
+		<result column="Col015" property="col015" jdbcType="VARCHAR" />
+		<result column="Col016" property="col016" jdbcType="VARCHAR" />
+		<result column="Col017" property="col017" jdbcType="VARCHAR" />
+		<result column="Col018" property="col018" jdbcType="VARCHAR" />
+		<result column="Col019" property="col019" jdbcType="VARCHAR" />
+		<result column="Col020" property="col020" jdbcType="VARCHAR" />
+		<result column="Col021" property="col021" jdbcType="VARCHAR" />
+		<result column="Col022" property="col022" jdbcType="VARCHAR" />
+		<result column="Col023" property="col023" jdbcType="VARCHAR" />
+		<result column="Col024" property="col024" jdbcType="VARCHAR" />
+		<result column="Col025" property="col025" jdbcType="VARCHAR" />
+		<result column="Col026" property="col026" jdbcType="VARCHAR" />
+		<result column="Col027" property="col027" jdbcType="VARCHAR" />
+		<result column="Col028" property="col028" jdbcType="VARCHAR" />
+		<result column="Col029" property="col029" jdbcType="VARCHAR" />
+		<result column="Col030" property="col030" jdbcType="VARCHAR" />
+		<result column="Col031" property="col031" jdbcType="VARCHAR" />
+		<result column="Col032" property="col032" jdbcType="VARCHAR" />
+		<result column="Col033" property="col033" jdbcType="VARCHAR" />
+		<result column="Col034" property="col034" jdbcType="VARCHAR" />
+		<result column="Col035" property="col035" jdbcType="VARCHAR" />
+		<result column="Col036" property="col036" jdbcType="VARCHAR" />
+		<result column="Col037" property="col037" jdbcType="VARCHAR" />
+		<result column="Col038" property="col038" jdbcType="VARCHAR" />
+		<result column="Col039" property="col039" jdbcType="VARCHAR" />
+		<result column="Col040" property="col040" jdbcType="VARCHAR" />
+		<result column="Col041" property="col041" jdbcType="VARCHAR" />
+		<result column="Col042" property="col042" jdbcType="VARCHAR" />
+		<result column="Col043" property="col043" jdbcType="VARCHAR" />
+		<result column="Col044" property="col044" jdbcType="VARCHAR" />
+		<result column="Col045" property="col045" jdbcType="VARCHAR" />
+		<result column="Col046" property="col046" jdbcType="VARCHAR" />
+		<result column="Col047" property="col047" jdbcType="VARCHAR" />
+		<result column="Col048" property="col048" jdbcType="VARCHAR" />
+		<result column="Col049" property="col049" jdbcType="VARCHAR" />
+		<result column="Col050" property="col050" jdbcType="VARCHAR" />
+		<result column="Col051" property="col051" jdbcType="VARCHAR" />
+		<result column="Col052" property="col052" jdbcType="VARCHAR" />
+		<result column="Col053" property="col053" jdbcType="VARCHAR" />
+		<result column="Col054" property="col054" jdbcType="VARCHAR" />
+		<result column="Col055" property="col055" jdbcType="VARCHAR" />
+		<result column="Col056" property="col056" jdbcType="VARCHAR" />
+		<result column="Col057" property="col057" jdbcType="VARCHAR" />
+		<result column="Col058" property="col058" jdbcType="VARCHAR" />
+		<result column="Col059" property="col059" jdbcType="VARCHAR" />
+		<result column="Col060" property="col060" jdbcType="VARCHAR" />
+		<result column="Col061" property="col061" jdbcType="VARCHAR" />
+		<result column="Col062" property="col062" jdbcType="VARCHAR" />
+		<result column="Col063" property="col063" jdbcType="VARCHAR" />
+		<result column="Col064" property="col064" jdbcType="VARCHAR" />
+		<result column="Col065" property="col065" jdbcType="VARCHAR" />
+		<result column="Col066" property="col066" jdbcType="VARCHAR" />
+		<result column="Col067" property="col067" jdbcType="VARCHAR" />
+		<result column="Col068" property="col068" jdbcType="VARCHAR" />
+		<result column="Col069" property="col069" jdbcType="VARCHAR" />
+		<result column="Col070" property="col070" jdbcType="VARCHAR" />
+		<result column="Col071" property="col071" jdbcType="VARCHAR" />
+		<result column="Col072" property="col072" jdbcType="VARCHAR" />
+		<result column="Col073" property="col073" jdbcType="VARCHAR" />
+		<result column="Col074" property="col074" jdbcType="VARCHAR" />
+		<result column="Col075" property="col075" jdbcType="VARCHAR" />
+		<result column="Col076" property="col076" jdbcType="VARCHAR" />
+		<result column="Col077" property="col077" jdbcType="VARCHAR" />
+		<result column="Col078" property="col078" jdbcType="VARCHAR" />
+		<result column="Col079" property="col079" jdbcType="VARCHAR" />
+		<result column="Col080" property="col080" jdbcType="VARCHAR" />
+		<result column="Col081" property="col081" jdbcType="VARCHAR" />
+		<result column="Col082" property="col082" jdbcType="VARCHAR" />
+		<result column="Col083" property="col083" jdbcType="VARCHAR" />
+		<result column="Col084" property="col084" jdbcType="VARCHAR" />
+		<result column="Col085" property="col085" jdbcType="VARCHAR" />
+		<result column="Col086" property="col086" jdbcType="VARCHAR" />
+		<result column="Col087" property="col087" jdbcType="VARCHAR" />
+		<result column="Col088" property="col088" jdbcType="VARCHAR" />
+		<result column="Col089" property="col089" jdbcType="VARCHAR" />
+		<result column="Col090" property="col090" jdbcType="VARCHAR" />
+		<result column="Col091" property="col091" jdbcType="VARCHAR" />
+		<result column="Col092" property="col092" jdbcType="VARCHAR" />
+		<result column="Col093" property="col093" jdbcType="VARCHAR" />
+		<result column="Col094" property="col094" jdbcType="VARCHAR" />
+		<result column="Col095" property="col095" jdbcType="VARCHAR" />
+		<result column="Col096" property="col096" jdbcType="VARCHAR" />
+		<result column="Col097" property="col097" jdbcType="VARCHAR" />
+		<result column="Col098" property="col098" jdbcType="VARCHAR" />
+		<result column="Col099" property="col099" jdbcType="VARCHAR" />
+		<result column="Col100" property="col100" jdbcType="VARCHAR" />
+		<collection property="dnIfLineList" ofType="com.ami.ifs.dao.IDnIfLine">
+			<id column="Id_line" property="id" jdbcType="CHAR" />
+			<result column="Dn_if_head_id_line" property="dnIfHeadId"
+				jdbcType="CHAR" />
+			<result column="Orig_order_line_no_line" property="origOrderLineNo"
+				jdbcType="VARCHAR" />
+			<result column="Col001_line" property="col001" jdbcType="VARCHAR" />
+			<result column="Col002_line" property="col002" jdbcType="VARCHAR" />
+			<result column="Col003_line" property="col003" jdbcType="VARCHAR" />
+			<result column="Col004_line" property="col004" jdbcType="VARCHAR" />
+			<result column="Col005_line" property="col005" jdbcType="VARCHAR" />
+			<result column="Col006_line" property="col006" jdbcType="VARCHAR" />
+			<result column="Col007_line" property="col007" jdbcType="VARCHAR" />
+			<result column="Col008_line" property="col008" jdbcType="VARCHAR" />
+			<result column="Col009_line" property="col009" jdbcType="VARCHAR" />
+			<result column="Col010_line" property="col010" jdbcType="VARCHAR" />
+			<result column="Col011_line" property="col011" jdbcType="VARCHAR" />
+			<result column="Col012_line" property="col012" jdbcType="VARCHAR" />
+			<result column="Col013_line" property="col013" jdbcType="VARCHAR" />
+			<result column="Col014_line" property="col014" jdbcType="VARCHAR" />
+			<result column="Col015_line" property="col015" jdbcType="VARCHAR" />
+			<result column="Col016_line" property="col016" jdbcType="VARCHAR" />
+			<result column="Col017_line" property="col017" jdbcType="VARCHAR" />
+			<result column="Col018_line" property="col018" jdbcType="VARCHAR" />
+			<result column="Col019_line" property="col019" jdbcType="VARCHAR" />
+			<result column="Col020_line" property="col020" jdbcType="VARCHAR" />
+			<result column="Col021_line" property="col021" jdbcType="VARCHAR" />
+			<result column="Col022_line" property="col022" jdbcType="VARCHAR" />
+			<result column="Col023_line" property="col023" jdbcType="VARCHAR" />
+			<result column="Col024_line" property="col024" jdbcType="VARCHAR" />
+			<result column="Col025_line" property="col025" jdbcType="VARCHAR" />
+			<result column="Col026_line" property="col026" jdbcType="VARCHAR" />
+			<result column="Col027_line" property="col027" jdbcType="VARCHAR" />
+			<result column="Col028_line" property="col028" jdbcType="VARCHAR" />
+			<result column="Col029_line" property="col029" jdbcType="VARCHAR" />
+			<result column="Col030_line" property="col030" jdbcType="VARCHAR" />
+			<result column="Col031_line" property="col031" jdbcType="VARCHAR" />
+			<result column="Col032_line" property="col032" jdbcType="VARCHAR" />
+			<result column="Col033_line" property="col033" jdbcType="VARCHAR" />
+			<result column="Col034_line" property="col034" jdbcType="VARCHAR" />
+			<result column="Col035_line" property="col035" jdbcType="VARCHAR" />
+			<result column="Col036_line" property="col036" jdbcType="VARCHAR" />
+			<result column="Col037_line" property="col037" jdbcType="VARCHAR" />
+			<result column="Col038_line" property="col038" jdbcType="VARCHAR" />
+			<result column="Col039_line" property="col039" jdbcType="VARCHAR" />
+			<result column="Col040_line" property="col040" jdbcType="VARCHAR" />
+			<result column="Col041_line" property="col041" jdbcType="VARCHAR" />
+			<result column="Col042_line" property="col042" jdbcType="VARCHAR" />
+			<result column="Col043_line" property="col043" jdbcType="VARCHAR" />
+			<result column="Col044_line" property="col044" jdbcType="VARCHAR" />
+			<result column="Col045_line" property="col045" jdbcType="VARCHAR" />
+			<result column="Col046_line" property="col046" jdbcType="VARCHAR" />
+			<result column="Col047_line" property="col047" jdbcType="VARCHAR" />
+			<result column="Col048_line" property="col048" jdbcType="VARCHAR" />
+			<result column="Col049_line" property="col049" jdbcType="VARCHAR" />
+			<result column="Col050_line" property="col050" jdbcType="VARCHAR" />
+		</collection>
+	</resultMap>
+	<sql id="DnHeadAndDnLine_Example_Where_Clause">
+
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and h.${criterion.condition}
+                </when>
+								<when test="criterion.singleValue">
+									and h.${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and h.${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+                </when>
+								<when test="criterion.listValue">
+									and h.${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+                  </foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="DnHeadAndDnLine_Column_List">
+
+		h.Exec_flag, h.Store_Id, h.Operate_Type, h.Ifs_A_Cd, h.Ifs_C_Cd,
+		h.Operate_Time,
+		h.Timestamp, h.Dn_if_head_id,
+		h.Orig_Order_No, h.Orig_Order_Type,
+		h.Order_Status, h.Col001, h.Col002, h.Col003,
+		h.Col004, h.Col005,
+		h.Col006, h.Col007, h.Col008, h.Col009, h.Col010, h.Col011, h.Col012,
+		h.Col013,
+		h.Col014, h.Col015, h.Col016,
+		h.Col017, h.Col018, h.Col019,
+		h.Col020, h.Col021, h.Col022, h.Col023, h.Col024,
+		h.Col025, h.Col026,
+		h.Col027,
+		h.Col028, h.Col029, h.Col030, h.Col031, h.Col032, h.Col033,
+		h.Col034, h.Col035,
+		h.Col036, h.Col037, h.Col038,
+		h.Col039, h.Col040,
+		h.Col041, h.Col042, h.Col043, h.Col044, h.Col045, h.Col046,
+		h.Col047,
+		h.Col048, h.Col049,
+		h.Col050, h.Col051, h.Col052, h.Col053, h.Col054,
+		h.Col055, h.Col056, h.Col057,
+		h.Col058, h.Col059, h.Col060,
+		h.Col061,
+		h.Col062, h.Col063, h.Col064, h.Col065, h.Col066, h.Col067, h.Col068,
+		h.Col069, h.Col070, h.Col071,
+		h.Col072, h.Col073, h.Col074, h.Col075,
+		h.Col076, h.Col077, h.Col078, h.Col079,
+		h.Col080, h.Col081, h.Col082,
+		h.Col083, h.Col084, h.Col085, h.Col086, h.Col087, h.Col088, h.Col089,
+		h.Col090,
+		h.Col091, h.Col092, h.Col093,
+		h.Col094, h.Col095, h.Col096,
+		h.Col097, h.Col098, h.Col099, h.Col100,
+		l.Id Id_line, l.Dn_if_head_id
+		Dn_if_head_id_line, l.Orig_order_line_no
+		Orig_order_line_no_line,
+		l.Col001 Col001_line, l.Col002 Col002_line,
+		l.Col003 Col003_line,
+		l.Col004 Col004_line, l.Col005 Col005_line,
+		l.Col006 Col006_line,
+		l.Col007 Col007_line, l.Col008 Col008_line, l.Col009 Col009_line,
+		l.Col010
+		Col010_line, l.Col011 Col011_line, l.Col012 Col012_line,
+		l.Col013
+		Col013_line, l.Col014 Col014_line, l.Col015 Col015_line,
+		l.Col016
+		Col016_line, l.Col017 Col017_line,
+		l.Col018 Col018_line,
+		l.Col019 Col019_line, l.Col020 Col020_line, l.Col021
+		Col021_line,
+		l.Col022 Col022_line, l.Col023 Col023_line, l.Col024
+		Col024_line,
+		l.Col025 Col025_line, l.Col026 Col026_line, l.Col027
+		Col027_line,
+		l.Col028 Col028_line,
+		l.Col029 Col029_line, l.Col030 Col030_line,
+		l.Col031 Col031_line, l.Col032
+		Col032_line, l.Col033 Col033_line,
+		l.Col034 Col034_line, l.Col035
+		Col035_line, l.Col036 Col036_line,
+		l.Col037 Col037_line, l.Col038
+		Col038_line, l.Col039 Col039_line,
+		l.Col040 Col040_line, l.Col041 Col041_line, l.Col042 Col042_line,
+		l.Col043
+		Col043_line, l.Col044 Col044_line, l.Col045 Col045_line,
+		l.Col046
+		Col046_line, l.Col047 Col047_line, l.Col048 Col048_line,
+		l.Col049
+		Col049_line, l.Col050 Col050_line
+	</sql>
+	<select id="selectDnHeadAndDnLineByExample" parameterType="com.ami.ifs.dao.IDnIfHeadExample"
+		resultMap="DnHeadAndDnLineMap">
+		select
+		<if test="distinct">
+			distinct
+    </if>
+		<if test="isTop">
+			top ${top}
+    </if>
+		<include refid="DnHeadAndDnLine_Column_List" />
+		from i_dn_if_head h left join i_dn_if_line l on h.Dn_if_head_id
+		=
+		l.Dn_if_head_id
+		<if test="_parameter != null">
+			<include refid="DnHeadAndDnLine_Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+    </if>
+	</select>
+
+	<resultMap id="DnIfHeadIdMap" type="java.lang.String">
+		<result column="Dn_if_head_id" property="dnIfHeadId" jdbcType="CHAR" />
+	</resultMap>
+	<select id="selectDnIfHeadIdByExample" parameterType="com.ami.ifs.dao.IDnIfHeadExample"
+		resultMap="DnIfHeadIdMap">
+		select
+		<if test="distinct">
+			distinct
+    </if>
+		<if test="isTop">
+			top ${top}
+    </if>
+		h.Dn_if_head_id
+		from i_dn_if_head h
+		<if test="_parameter != null">
+			<include refid="DnHeadAndDnLine_Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+    </if>
+	</select>
+	<resultMap id="FieldMapResultMap" type="com.ami.ifs.dao.FieldMap">
+		<id column="Field_map_id" property="fieldMapId" jdbcType="BIGINT" />
+		<result column="Cd1" property="cd1" jdbcType="NVARCHAR" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="Cd2" property="cd2" jdbcType="NVARCHAR" />
+		<result column="Cd3" property="cd3" jdbcType="NVARCHAR" />
+		<result column="Remark" property="remark" jdbcType="NVARCHAR" />
+		<collection property="fieldMapLineList" ofType="com.ami.ifs.dao.FieldMapLine">
+			<id column="Field_map_line_id_line" property="fieldMapLineId"
+				jdbcType="BIGINT" />
+			<result column="Field_map_id_line" property="fieldMapId"
+				jdbcType="BIGINT" />
+			<result column="Dest_prop_line" property="destProp" jdbcType="VARCHAR" />
+			<result column="Org_prop_line" property="orgProp" jdbcType="VARCHAR" />
+			<result column="Status_line" property="status" jdbcType="INTEGER" />
+		</collection>
+	</resultMap>
+	<sql id="FieldMap_Example_Where_Clause">
+
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and f.${criterion.condition}
+                </when>
+								<when test="criterion.singleValue">
+									and f.${criterion.condition} #{criterion.value}
+                </when>
+								<when test="criterion.betweenValue">
+									and f.${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+                </when>
+								<when test="criterion.listValue">
+									and f.${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+                  </foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="FieldMap_Column_List">
+
+		f.Field_map_id, f.Cd1, f.Status, f.Cd2, f.Cd3, f.Remark,
+		l.Field_map_line_id Field_map_line_id_line, l.Field_map_id Field_map_id_line, l.Dest_prop
+		Dest_prop_line, l.Org_prop Org_prop_line, l.Status Status_line
+  </sql>
+	<select id="selectFieldMapByExample" resultMap="FieldMapResultMap"
+		parameterType="com.ami.ifs.dao.FieldMapExample">
+
+		select
+		<if test="distinct">
+			distinct
+    </if>
+		<include refid="FieldMap_Column_List" />
+		from Field_map f left join Field_map_line l on f.Field_map_id =
+		l.Field_map_id
+		<if test="_parameter != null">
+			<include refid="FieldMap_Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+    </if>
+	</select>
+	<resultMap id="ValueMapResultMap" type="com.ami.ifs.dao.ValueMap">
+		<id column="Value_map_id" property="valueMapId" jdbcType="BIGINT" />
+		<result column="Cd1" property="cd1" jdbcType="NVARCHAR" />
+		<result column="Cd2" property="cd2" jdbcType="NVARCHAR" />
+		<result column="Cd3" property="cd3" jdbcType="NVARCHAR" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<collection property="valueMapLineList" ofType="com.ami.ifs.dao.ValueMapLine">
+			<id column="Value_map_line_id_line" property="valueMapLineId" jdbcType="BIGINT" />
+			<result column="Value_map_id_line" property="valueMapId" jdbcType="BIGINT" />
+			<result column="Org_prop_line" property="orgProp" jdbcType="VARCHAR" />
+			<result column="Dest_prop_line" property="destProp" jdbcType="VARCHAR" />
+			<result column="Org_value_line" property="orgValue" jdbcType="VARCHAR" />
+			<result column="Dest_value_line" property="destValue" jdbcType="VARCHAR" />
+			<result column="Status_line" property="status" jdbcType="INTEGER" />
+		</collection>
+	</resultMap>
+	<sql id="ValueMap_Example_Where_Clause">
+
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and v.${criterion.condition}
+                </when>
+								<when test="criterion.singleValue">
+									and v.${criterion.condition} #{criterion.value}
+                </when>
+								<when test="criterion.betweenValue">
+									and v.${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+                </when>
+								<when test="criterion.listValue">
+									and v.${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+                  </foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="ValueMap_Column_List">
+
+		v.Value_map_id, v.Cd1, v.Cd2, v.Cd3, v.Status,
+		l.Value_map_line_id Value_map_line_id_line, l.Value_map_id Value_map_id_line, l.Org_prop
+		Org_prop_line, l.Dest_prop Dest_prop_line, l.Org_value Org_value_line,
+		l.Dest_value Dest_value_line, l.Status Status_line
+  </sql>
+	<select id="selectValueMapByExample" resultMap="ValueMapResultMap"
+		parameterType="com.ami.ifs.dao.ValueMapExample">
+
+		select
+		<if test="distinct">
+			distinct
+    </if>
+		<include refid="ValueMap_Column_List" />
+		from Value_map v left join Value_map_line l on v.Value_map_id =
+		l.Value_map_id
+		<if test="_parameter != null">
+			<include refid="ValueMap_Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+    </if>
+	</select>
+</mapper>

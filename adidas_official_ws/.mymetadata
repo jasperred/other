@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="adidas_official_ws"
+  id="myeclipse.1322547457223"
+  context-root="/adidas_official_ws"
+  j2ee-spec="5.0"
+  archive="adidas_official_ws.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

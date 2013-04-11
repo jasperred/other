@@ -1,0 +1,6 @@
+article.save.path=d:\\deploy\\article\\
+article.ftp.bak=d:\\deploy\\article\\bak\\
+official.ws.userNo=Adidas_ami
+official.ws.appKey=adidas@#$8912!@ad
+official.ws.url=https://shop.adidas.cn/index.php/api/v2_soap/index/
+official.ws.timeout=3600000

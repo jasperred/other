@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE generatorConfiguration  
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">  
+  
+<generatorConfiguration>  
+    <classPathEntry location="sqljdbc4.jar" />  
+  
+    <context id="DB2Tables" targetRuntime="MyBatis3">  
+  
+        <commentGenerator>  
+            <property name="suppressDate" value="true" />  
+        </commentGenerator>  
+  
+        <jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"  
+            connectionURL="jdbc:sqlserver://10.10.10.16:1433;DatabaseName=ifs" userId="sa" password="Netec2011">  
+        </jdbcConnection>  
+  
+        <javaTypeResolver>  
+            <property name="forceBigDecimals" value="false" />  
+        </javaTypeResolver>  
+  
+        <javaModelGenerator targetPackage="com.ami.ifs.dao"  
+            targetProject="src">  
+            <property name="enableSubPackages" value="true" />  
+            <property name="trimStrings" value="true" />  
+        </javaModelGenerator>  
+  
+        <sqlMapGenerator targetPackage="com.ami.ifs.dao"  
+            targetProject="src">  
+            <property name="enableSubPackages" value="true" />  
+        </sqlMapGenerator>  
+  
+        <javaClientGenerator type="XMLMAPPER"  
+            targetPackage="com.ami.ifs.dao" targetProject="src">  
+            <property name="enableSubPackages" value="true" />  
+        </javaClientGenerator>  
+  
+        <table tableName="I_Order_Head" domainObjectName="IOrderHead">  
+        </table>  
+        <table tableName="O_Order_Head" domainObjectName="OOrderHead">  
+        </table> 
+        <table tableName="I_Order_Line" domainObjectName="IOrderLine">  
+        </table> 
+        <table tableName="O_Order_Line" domainObjectName="OOrderLine">  
+        </table> 
+        <table tableName="Unit_Sku_Expands" domainObjectName="UnitSkuExpands">  
+        </table> 
+        <table tableName="O_Unit_Item_Master" domainObjectName="OUnitItemMaster">  
+        </table> 
+        <table tableName="O_Unit_Sku_Master" domainObjectName="OUnitSkuMaster">  
+        </table> 
+        
+        <table tableName="I_Unit_Item_Master" domainObjectName="IUnitItemMaster">  
+        </table> 
+        <table tableName="I_Unit_Sku_Master" domainObjectName="IUnitSkuMaster">  
+        </table> 
+        <table tableName="Ifs_Unit" domainObjectName="IfsUnit">  
+        </table> 
+        <table tableName="Ifs_Type" domainObjectName="IfsType">  
+        </table> 
+        <table tableName="Ifs_Status" domainObjectName="IfsStatus">  
+        </table> 
+        <table tableName="Ifs_Db_Log" domainObjectName="IfsDbLog">  
+        </table> 
+        <table tableName="Ifs_Key" domainObjectName="IfsKey">  
+        </table> 
+        <table tableName="i_dn_if_head" domainObjectName="IDnIfHead">  
+        </table> 
+        <table tableName="i_dn_if_line" domainObjectName="IDnIfLine">  
+        </table> 
+        <table tableName="Field_map" domainObjectName="FieldMap">  
+        </table> 
+        <table tableName="Field_map_line" domainObjectName="FieldMapLine">  
+        </table> 
+        <table tableName="Value_map" domainObjectName="ValueMap">  
+        </table> 
+        <table tableName="Value_map_line" domainObjectName="ValueMapLine">  
+        </table> 
+        <table tableName="Global_define" domainObjectName="GlobalDefine">  
+        </table> 
+  
+    </context>  
+</generatorConfiguration>

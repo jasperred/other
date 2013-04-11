@@ -1,0 +1,149 @@
+package com.sunmw.web.action.area;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.sunmw.web.bean.area.AreaServices;
+import com.sunmw.web.util.WebUtil;
+
+public class AreaSearchAction {
+	private AreaServices areaServices;
+	
+	private String areaCd;
+	private String areaName;
+	
+	private int currentPage = 1;// 当前页
+	private int rowCount;// 总行数
+	private int pageRow = 15;// 每页显示数
+
+	private List<Map> resultList;// 查询结果
+
+	private String isNext = "TRUE";// 是否有下一页
+
+	private String isBack = "TRUE";// 是否有上一页
+	private int pageCount;// 页数
+	
+	
+	
+	public AreaServices getAreaServices() {
+		return areaServices;
+	}
+
+	public void setAreaServices(AreaServices areaServices) {
+		this.areaServices = areaServices;
+	}
+
+	public String getAreaCd() {
+		return areaCd;
+	}
+
+	public void setAreaCd(String areaCd) {
+		this.areaCd = areaCd;
+	}
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public int getRowCount() {
+		return rowCount;
+	}
+
+	public void setRowCount(int rowCount) {
+		this.rowCount = rowCount;
+	}
+
+	public int getPageRow() {
+		return pageRow;
+	}
+
+	public void setPageRow(int pageRow) {
+		this.pageRow = pageRow;
+	}
+
+	public List<Map> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<Map> resultList) {
+		this.resultList = resultList;
+	}
+
+	public String getIsNext() {
+		return isNext;
+	}
+
+	public void setIsNext(String isNext) {
+		this.isNext = isNext;
+	}
+
+	public String getIsBack() {
+		return isBack;
+	}
+
+	public void setIsBack(String isBack) {
+		this.isBack = isBack;
+	}
+
+	public int getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
+	public String searchSecurityGroup()
+	{
+		try {
+			Map param = new HashMap();
+			if (!WebUtil.isNull(areaCd))
+				param.put("areaCd", WebUtil.filterSpecialCharacters(areaCd));
+			if (!WebUtil.isNull(areaName))
+				param.put("areaName", WebUtil.filterSpecialCharacters(areaName));
+			Map r = this.areaServices.searchArea(param, currentPage, pageRow);
+			this.rowCount = (Integer) r.get("COUNT_ROW");
+			this.resultList = (List) r.get("RESULT");
+			countPage();
+		} catch (Exception e) {
+			if(this.resultList!=null)
+				this.resultList.clear();
+			this.rowCount = 0;
+		}
+		return "success";
+	}
+	
+	private void countPage() {
+		if (rowCount % this.pageRow == 0)
+			pageCount = rowCount / this.pageRow;
+		else
+			pageCount = rowCount / this.pageRow + 1;// 总页数
+		if (currentPage < pageCount)
+			isNext = "true";
+		else
+			isNext = "false";
+		if (currentPage > 1)
+			isBack = "true";
+		else
+			isBack = "false";
+	}
+	
+	public String viewArea()
+	{
+		return "success";
+	}
+
+}

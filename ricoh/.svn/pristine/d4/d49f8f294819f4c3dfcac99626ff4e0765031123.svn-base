@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="CompanyMachineTypeRef"
+		table="company_machine_type_ref"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<composite-id name="Id" class="CompanyMachineTypeRefPK">
+			<key-property
+				name="CompanyId"
+				column="company_id"
+				type="integer"
+			/>
+			<key-property
+				name="MachineTypeId"
+				column="machine_type_id"
+				type="integer"
+			/>
+		</composite-id>
+
+		<property
+			name="MachineCd"
+			column="machine_cd"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

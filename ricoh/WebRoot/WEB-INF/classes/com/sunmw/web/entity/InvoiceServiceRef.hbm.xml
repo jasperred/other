@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="InvoiceServiceRef"
+		table="invoice_service_ref"
+	>
+		<meta attribute="sync-DAO">false</meta>
+
+		<meta attribute="sync-DAO">false</meta>
+
+		<composite-id name="Id" class="InvoiceServiceRefPK">
+			<key-property
+				name="ServiceId"
+				column="service_id"
+				type="integer"
+			/>
+			<key-property
+				name="InvoiceId"
+				column="invoice_id"
+				type="integer"
+			/>
+		</composite-id>
+
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ServiceAmt"
+			column="service_amt"
+			type="big_decimal"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="HomeAmt"
+			column="home_amt"
+			type="big_decimal"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="OtherAmt"
+			column="other_amt"
+			type="big_decimal"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="ServiceNo"
+			column="service_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="CompanyId"
+			column="company_id"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="ServiceApplyId"
+			column="service_apply_id"
+			type="integer"
+			not-null="true"
+			length="10"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

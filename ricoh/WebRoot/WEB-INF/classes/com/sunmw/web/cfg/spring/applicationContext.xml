@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-autowire="byName">
+	<bean id="dataSourceERP" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close"><property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="jdbcUrl" value="jdbc:sqlserver://localhost:1433;DatabaseName=ricoh_152"/>
+        <property name="maxPoolSize" value="50"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="idleConnectionTestPeriod" value="30"/>
+        <property name="acquireIncrement" value="5"/>
+        <property name="properties">
+            <props>
+                <prop key="user">sa</prop>
+                <prop key="password">123</prop>
+            </props>
+        </property>
+	</bean>
+	<!--<bean id="jotmJta" class="org.springframework.transaction.jta.JotmFactoryBean" />
+	<bean id="jtaTxManager"
+		class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="userTransaction" ref="jotmJta" />
+	</bean>
+	--><bean id="sessionFactoryERP"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSourceERP" />
+		</property>
+		<!--<property name="jtaTransactionManager" ref="jotmJta" />
+		--><property name="mappingDirectoryLocations">
+			<list>
+				<value>
+					classpath:com/sunmw/web/entity/
+				</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.SQLServerDialect
+				</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.pool_size">10</prop>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<prop key="hibernate.connection.autoReconnect">true</prop>
+			</props>
+		</property>
+	</bean>
+	<!--<tx:annotation-driven transaction-manager="jtaTxManager" />
+
+	--><bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="loginServices" class="com.sunmw.web.bean.login.impl.SimpleLoginServices">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="loginAction" class="com.sunmw.web.action.login.LoginAction">
+		<property name="loginServices">
+			<ref bean="loginServices" />
+		</property>
+	</bean>
+	<bean id="navigateListAction" class="com.sunmw.web.action.login.NavigateAction">
+		<property name="userServices">
+			<ref bean="userServices" />
+		</property>
+	</bean>
+	<bean id="userServices" class="com.sunmw.web.bean.login.impl.UserServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="userSearchAction" class="com.sunmw.web.action.login.UserSearchAction">
+		<property name="userServices">
+			<ref bean="userServices" />
+		</property>
+	</bean>
+	<bean id="userInfoAction" class="com.sunmw.web.action.login.UserInfoAction">
+		<property name="userServices">
+			<ref bean="userServices" />
+		</property>
+	</bean>
+	<bean id="userSecurityGroupAction" class="com.sunmw.web.action.login.UserSecurityGroupAction">
+		<property name="securityPermissionServices">
+			<ref bean="securityPermissionServices" />
+		</property>
+	</bean>
+	<bean id="securityPermissionServices"
+		class="com.sunmw.web.bean.login.impl.SecurityPermissionServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="securityGroupSearchAction" class="com.sunmw.web.action.login.SecurityGroupSearchAction">
+		<property name="securityPermissionServices">
+			<ref bean="securityPermissionServices" />
+		</property>
+	</bean>
+	<bean id="securityGroupInfoAction" class="com.sunmw.web.action.login.SecurityGroupInfoAction">
+		<property name="securityPermissionServices">
+			<ref bean="securityPermissionServices" />
+		</property>
+		<property name="areaServices">
+			<ref bean="areaServices" />
+		</property>
+	</bean>
+	<bean id="menuAction" class="com.sunmw.web.action.login.MenuAction">
+		<property name="securityPermissionServices">
+			<ref bean="securityPermissionServices" />
+		</property>
+	</bean>
+	<bean id="moduleServices" class="com.sunmw.web.bean.module.impl.ModuleServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="moduleAction" class="com.sunmw.web.action.module.ModuleAction">
+		<property name="moduleServices">
+			<ref bean="moduleServices" />
+		</property>
+	</bean>
+	<bean id="areaServices" class="com.sunmw.web.bean.area.impl.AreaServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="areaSearchAction" class="com.sunmw.web.action.area.AreaSearchAction">
+		<property name="areaServices">
+			<ref bean="areaServices" />
+		</property>
+	</bean>
+	<bean id="areaInfoAction" class="com.sunmw.web.action.area.AreaInfoAction">
+		<property name="areaServices">
+			<ref bean="areaServices" />
+		</property>
+	</bean>
+	<bean id="baseServices" class="com.sunmw.web.bean.base.impl.BaseServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="baseAction" class="com.sunmw.web.action.base.BaseAction">
+		<property name="areaServices">
+			<ref bean="areaServices" />
+		</property>
+		<property name="baseServices">
+			<ref bean="baseServices" />
+		</property>
+		<property name="securityPermissionServices">
+			<ref bean="securityPermissionServices" />
+		</property>
+	</bean>
+	<bean id="companyServices" class="com.sunmw.web.bean.company.impl.CompanyServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="companySearchAction" class="com.sunmw.web.action.company.CompanySearchAction">
+		<property name="companyServices">
+			<ref bean="companyServices" />
+		</property>
+	</bean>
+	<bean id="companyInfoAction" class="com.sunmw.web.action.company.CompanyInfoAction">
+		<property name="companyServices">
+			<ref bean="companyServices" />
+		</property>
+	</bean>
+	<bean id="fileUploadAction" class="com.sunmw.web.action.common.FileUploadAction" >
+	</bean>
+	<bean id="machineServices" class="com.sunmw.web.bean.machine.impl.MachineServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	
+	<bean id="machineImportServices" class="com.sunmw.web.bean.machine.impl.MachineImportServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="machineImportAction" class="com.sunmw.web.action.machine.MachineImportAction">	
+		<property name="machineImportServices">
+			<ref bean="machineImportServices" />
+		</property>
+	</bean>
+	<bean id="machineSearchAction" class="com.sunmw.web.action.machine.MachineSearchAction">
+		<property name="machineServices">
+			<ref bean="machineServices" />
+		</property>
+	</bean>
+	<bean id="machineInfoAction" class="com.sunmw.web.action.machine.MachineInfoAction">
+		<property name="machineServices">
+			<ref bean="machineServices" />
+		</property>
+	</bean>
+	<bean id="machineTypeSearchAction" class="com.sunmw.web.action.machine.MachineTypeSearchAction">
+		<property name="machineServices">
+			<ref bean="machineServices" />
+		</property>
+	</bean>
+	<bean id="machineTypeInfoAction" class="com.sunmw.web.action.machine.MachineTypeInfoAction">
+		<property name="machineServices">
+			<ref bean="machineServices" />
+		</property>
+	</bean>
+	<bean id="companyMachineTypeRefSearchAction" class="com.sunmw.web.action.company.CompanyMachineTypeRefSearchAction">
+		<property name="companyServices">
+			<ref bean="companyServices" />
+		</property>
+	</bean>
+	<bean id="companyMachineTypeRefDeleteAction" class="com.sunmw.web.action.company.CompanyMachineTypeRefDeleteAction">
+		<property name="companyServices">
+			<ref bean="companyServices" />
+		</property>
+	</bean>
+	<bean id="serviceOrderServices" class="com.sunmw.web.bean.serviceOrder.impl.ServiceOrderServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="serviceOrderSearchAction" class="com.sunmw.web.action.serviceOrder.SearchServiceOrderAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="serviceOrderNewAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderNewAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="serviceOrderInfoAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderInfoAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="saveServiceOrderInfoAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderInfoSaveAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="faultAndPartAction" class="com.sunmw.web.action.serviceOrder.FaultAndPartAction">
+		<property name="baseServices">
+			<ref bean="baseServices" />
+		</property>
+	</bean>
+	<bean id="serviceOrderFileUploadAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderFileUploadAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="inventoryServices" class="com.sunmw.web.bean.inventory.impl.InventoryServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="inventorySearchAction" class="com.sunmw.web.action.inventory.InventorySearchAction">
+		<property name="inventoryServices">
+			<ref bean="inventoryServices" />
+		</property>
+	</bean>
+	<bean id="cancelServiceOrderAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderCancelAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	<bean id="serviceApplyServices" class="com.sunmw.web.bean.serviceOrder.impl.ServiceApplyServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="applyServiceAction" class="com.sunmw.web.action.serviceApply.ServiceApplyAction">
+		<property name="serviceApplyServices">
+			<ref bean="serviceApplyServices" />
+		</property>
+	</bean>
+	<bean id="auditedApplyServiceAction" class="com.sunmw.web.action.serviceApply.ServiceApplyAuditedAction">
+		<property name="serviceApplyServices">
+			<ref bean="serviceApplyServices" />
+		</property>
+	</bean>	
+	<bean id="applyServiceInfoAction" class="com.sunmw.web.action.serviceApply.ServiceApplyInfoAction">
+		<property name="serviceApplyServices">
+			<ref bean="serviceApplyServices" />
+		</property>
+	</bean>	
+	<bean id="searchApplyServiceAction" class="com.sunmw.web.action.serviceApply.ServiceApplySeachAction">
+		<property name="serviceApplyServices">
+			<ref bean="serviceApplyServices" />
+		</property>
+	</bean>	
+	<bean id="serviceApplyFileUploadAction" class="com.sunmw.web.action.serviceApply.ServiceApplyFileUploadAction">
+		<property name="serviceApplyServices">
+			<ref bean="serviceApplyServices" />
+		</property>
+	</bean>
+	<bean id="serviceDeliveryServices" class="com.sunmw.web.bean.serviceOrder.impl.ServiceDeliveryServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="searchDeliveryServiceAction" class="com.sunmw.web.action.serviceDelivery.ServiceDeliverySearchAction">
+		<property name="serviceDeliveryServices">
+			<ref bean="serviceDeliveryServices" />
+		</property>
+	</bean>
+	<bean id="serviceDeliveryInfoAction" class="com.sunmw.web.action.serviceDelivery.ServiceDeliveryInfoAction">
+		<property name="serviceDeliveryServices">
+			<ref bean="serviceDeliveryServices" />
+		</property>
+	</bean>
+	<bean id="serviceDeliveryConfirmAction" class="com.sunmw.web.action.serviceDelivery.ServiceDeliveryConfirmAction">
+		<property name="serviceDeliveryServices">
+			<ref bean="serviceDeliveryServices" />
+		</property>
+	</bean>
+	
+	<bean id="serviceDeliveryBackApplyAction" class="com.sunmw.web.action.serviceDelivery.ServiceDeliveryBackApplyAction">
+		<property name="serviceDeliveryServices">
+			<ref bean="serviceDeliveryServices" />
+		</property>
+	</bean>
+	<bean id="serviceDeliveryFileUploadAction" class="com.sunmw.web.action.serviceDelivery.ServiceDeliveryFileUploadAction">
+		<property name="serviceDeliveryServices">
+			<ref bean="serviceDeliveryServices" />
+		</property>
+	</bean>
+	<bean id="serviceOrderFinishAction" class="com.sunmw.web.action.serviceOrder.ServiceOrderFinishAction">
+		<property name="serviceOrderServices">
+			<ref bean="serviceOrderServices" />
+		</property>
+	</bean>
+	
+	<bean id="serviceVisitServices" class="com.sunmw.web.bean.serviceOrder.impl.ServiceCsServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="searchServiceVisitAction" class="com.sunmw.web.action.serviceVisit.SearchServiceVisitAction">
+		<property name="serviceVisitServices">
+			<ref bean="serviceVisitServices" />
+		</property>
+	</bean>	
+	<bean id="searchNoVisitServiceOrderAction" class="com.sunmw.web.action.serviceVisit.SearchNoVisitServiceOrderAction">
+		<property name="serviceVisitServices">
+			<ref bean="serviceVisitServices" />
+		</property>
+	</bean>
+	<bean id="visitServiceOrderAction" class="com.sunmw.web.action.serviceVisit.ServiceOrderVisitInfoAction">
+		<property name="serviceVisitServices">
+			<ref bean="serviceVisitServices" />
+		</property>
+	</bean>
+	<bean id="invoiceServices" class="com.sunmw.web.bean.invoice.impl.ServiceInvoiceServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="searchInvoiceAction" class="com.sunmw.web.action.serviceInvoice.SearchInvoiceAction">
+		<property name="invoiceServices">
+			<ref bean="invoiceServices" />
+		</property>
+	</bean>
+	<bean id="previewInvoiceListAction" class="com.sunmw.web.action.serviceInvoice.InvoiceListPreviewAction">
+		<property name="invoiceServices">
+			<ref bean="invoiceServices" />
+		</property>
+	</bean>
+	<bean id="invoiceInfoAction" class="com.sunmw.web.action.serviceInvoice.InvoiceInfoAction">
+		<property name="invoiceServices">
+			<ref bean="invoiceServices" />
+		</property>
+	</bean>
+	<bean id="invoiceFileUploadAction" class="com.sunmw.web.action.serviceInvoice.InvoiceFileUploadAction">
+		<property name="invoiceServices">
+			<ref bean="invoiceServices" />
+		</property>
+	</bean>
+	<bean id="printServices" class="com.sunmw.web.bean.print.impl.PrintServicesImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactoryERP" />
+		</property>
+	</bean>
+	<bean id="serviceOrderPrintAction" class="com.sunmw.web.action.print.PrintServiceOrderAction">
+		<property name="printServices">
+			<ref bean="printServices" />
+		</property>
+	</bean>
+	<bean id="serviceReturnPrintAction" class="com.sunmw.web.action.print.PrintServiceReturnAction">
+		<property name="printServices">
+			<ref bean="printServices" />
+		</property>
+	</bean>
+	<bean id="verifyRequestAction" class="com.sunmw.web.action.login.VerifyRequestAction">
+		
+	</bean>
+</beans>

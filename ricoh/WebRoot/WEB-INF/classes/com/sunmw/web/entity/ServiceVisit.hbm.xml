@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="ServiceVisit"
+		table="service_visit"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="service_visit_id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="ServiceId"
+			column="service_id"
+			type="integer"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="ServiceVisitNo"
+			column="service_visit_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ServiceNo"
+			column="service_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="Status"
+			column="status"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="VisitFlag"
+			column="visit_flag"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="VisitResult"
+			column="visit_result"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="VisitMemo"
+			column="visit_memo"
+			type="string"
+			not-null="false"
+			length="500"
+		/>
+		<property
+			name="Ctime"
+			column="ctime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Cuser"
+			column="cuser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+		<property
+			name="Mtime"
+			column="mtime"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="Muser"
+			column="muser"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+
+
+	</class>	
+</hibernate-mapping>

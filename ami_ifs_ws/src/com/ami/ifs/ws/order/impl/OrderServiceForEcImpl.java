@@ -1,0 +1,881 @@
+package com.ami.ifs.ws.order.impl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.transaction.Transaction;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
+import com.ami.ifs.dao.IDnIfHead;
+import com.ami.ifs.dao.IDnIfHeadMapper;
+import com.ami.ifs.dao.IDnIfLine;
+import com.ami.ifs.dao.IDnIfLineMapper;
+import com.ami.ifs.dao.IOrderHead;
+import com.ami.ifs.dao.IOrderHeadMapper;
+import com.ami.ifs.dao.IOrderLine;
+import com.ami.ifs.dao.IOrderLineMapper;
+import com.ami.ifs.dao.IfsDbLog;
+import com.ami.ifs.dao.IfsDbLogMapper;
+import com.ami.ifs.dao.IfsUnit;
+import com.ami.ifs.dao.OOrderHead;
+import com.ami.ifs.dao.OOrderHeadExample;
+import com.ami.ifs.dao.OOrderHeadMapper;
+import com.ami.ifs.dao.OOrderLineMapper;
+import com.ami.ifs.io.MessageMapping;
+import com.ami.ifs.io.SuccessMapping;
+import com.ami.ifs.io.order.DnUploadIFSCParams;
+import com.ami.ifs.io.order.DnUploadIFSCReturn;
+import com.ami.ifs.io.order.OrderBatchListIFSCParams;
+import com.ami.ifs.io.order.OrderBatchListIFSCReturn;
+import com.ami.ifs.io.order.OrderListIFSCParams;
+import com.ami.ifs.io.order.OrderListIFSCReturn;
+import com.ami.ifs.io.order.OrderUploadIFSCParams;
+import com.ami.ifs.io.order.OrderUploadIFSCReturn;
+import com.ami.ifs.io.order.ReturnUploadIFSCParams;
+import com.ami.ifs.io.order.ReturnUploadIFSCReturn;
+import com.ami.ifs.util.WebUtil;
+import com.ami.ifs.ws.common.Message;
+import com.ami.ifs.ws.common.Security;
+import com.ami.ifs.ws.order.OrderServiceForEc;
+
+public class OrderServiceForEcImpl implements OrderServiceForEc {
+	
+
+	private Security security;
+	private IfsDbLogMapper ifsDbLogMapper;
+	private IOrderHeadMapper iOrderHeadMapper;
+	private IOrderLineMapper iOrderLineMapper;
+	private OOrderHeadMapper oOrderHeadMapper;
+	private OOrderLineMapper oOrderLineMapper;
+	private IDnIfHeadMapper iDnIfHeadMapper;
+	private IDnIfLineMapper iDnIfLineMapper;
+
+	private SqlSessionFactory sqlSessionFactory;
+	
+	public Security getSecurity() {
+		return security;
+	}
+
+	public void setSecurity(Security security) {
+		this.security = security;
+	}
+
+	public IfsDbLogMapper getIfsDbLogMapper() {
+		return ifsDbLogMapper;
+	}
+
+	public void setIfsDbLogMapper(IfsDbLogMapper ifsDbLogMapper) {
+		this.ifsDbLogMapper = ifsDbLogMapper;
+	}
+
+	public IOrderHeadMapper getiOrderHeadMapper() {
+		return iOrderHeadMapper;
+	}
+
+	public void setiOrderHeadMapper(IOrderHeadMapper iOrderHeadMapper) {
+		this.iOrderHeadMapper = iOrderHeadMapper;
+	}
+
+	public IOrderLineMapper getiOrderLineMapper() {
+		return iOrderLineMapper;
+	}
+
+	public void setiOrderLineMapper(IOrderLineMapper iOrderLineMapper) {
+		this.iOrderLineMapper = iOrderLineMapper;
+	}
+
+	public OOrderHeadMapper getoOrderHeadMapper() {
+		return oOrderHeadMapper;
+	}
+
+	public void setoOrderHeadMapper(OOrderHeadMapper oOrderHeadMapper) {
+		this.oOrderHeadMapper = oOrderHeadMapper;
+	}
+
+	public OOrderLineMapper getoOrderLineMapper() {
+		return oOrderLineMapper;
+	}
+
+	public void setoOrderLineMapper(OOrderLineMapper oOrderLineMapper) {
+		this.oOrderLineMapper = oOrderLineMapper;
+	}
+
+	public IDnIfHeadMapper getiDnIfHeadMapper() {
+		return iDnIfHeadMapper;
+	}
+
+	public void setiDnIfHeadMapper(IDnIfHeadMapper iDnIfHeadMapper) {
+		this.iDnIfHeadMapper = iDnIfHeadMapper;
+	}
+
+	public IDnIfLineMapper getiDnIfLineMapper() {
+		return iDnIfLineMapper;
+	}
+
+	public void setiDnIfLineMapper(IDnIfLineMapper iDnIfLineMapper) {
+		this.iDnIfLineMapper = iDnIfLineMapper;
+	}
+
+	public SqlSessionFactory getSqlSessionFactory() {
+		return sqlSessionFactory;
+	}
+
+	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	public OrderBatchListIFSCReturn orderBatchListIFSC(
+			OrderBatchListIFSCParams r) {
+		//日志插入
+		Date fromDate = new Date();
+		IfsDbLog dblog = new IfsDbLog();
+		dblog.setStartOperateTime(fromDate);
+		dblog.setOperateType("OrderServiceForEc.orderBatchListIFSC");
+		dblog.setIfsCCd(r.getIfsEcCd());
+		OrderBatchListIFSCReturn or = new OrderBatchListIFSCReturn();
+		MessageMapping mm = new MessageMapping();
+		if(WebUtil.isNull(r.getIfsKey())||WebUtil.isNull(r.getIfsEcCd()))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查IFSKEY
+		List<IfsUnit> iuList = security.checkSecurityForC( r.getIfsKey(), r.getIfsEcCd());
+		if(WebUtil.isNullForList(iuList))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查Timestamp
+		if(WebUtil.isNull(r.getTimestamp()))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getTimestampErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getTimestampErrorMessageForEc().getMessageCode()+mm.getTimestampErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//设置查询条件
+		OOrderHeadExample example = new OOrderHeadExample();
+		com.ami.ifs.dao.OOrderHeadExample.Criteria c = example.createCriteria();
+		List<Long> storeIdList = new ArrayList();
+		for(IfsUnit i:iuList)
+		{
+			storeIdList.add(i.getStoreId());
+		}
+		c.andStoreIdIn(storeIdList);
+		c.andIfsCCdEqualTo(r.getIfsEcCd());
+		c.andTimestampGreaterThan(r.getTimestamp());
+		int count = oOrderHeadMapper.countByExample(example);
+		List<OOrderHead> ohList = null;
+		if(count>0)
+		{
+			//设置查询条数
+			example.setTop(true);
+			if(r.getPageSize()>1000)
+				example.setTop(1000);
+			else
+				example.setTop(r.getPageSize());
+			//排序
+			example.setOrderByClause("Timestamp,Order_Head_Id");
+			//得到top orderHeadId
+			List<String> orderHeadIdList = oOrderHeadMapper.selectOrderHeadIdByExample(example);
+			OOrderHeadExample example2 = new OOrderHeadExample();
+			com.ami.ifs.dao.OOrderHeadExample.Criteria c2 = example2.createCriteria();
+			c2.andOrderHeadIdIn(orderHeadIdList);
+			//排序
+			example2.setOrderByClause("h.Timestamp,h.Order_Head_Id,l.Disp_Index");
+			ohList = oOrderHeadMapper.selectOrderHeadAndOrderLineByExample(example2);
+		}		
+		or.setOrderHeadList(ohList);
+		or.setRowCount(count);
+		or.setFlag("SUCCESS");
+		//日志插入
+		dblog.setEndOperateTime(new Date());
+		dblog.setSuccess("SUCCESS");
+		ifsDbLogMapper.insertSelective(dblog);
+		return or;
+	}
+
+	public OrderListIFSCReturn orderListIFSC(OrderListIFSCParams r) {
+		//日志插入
+		Date fromDate = new Date();
+		IfsDbLog dblog = new IfsDbLog();
+		dblog.setStartOperateTime(fromDate);
+		dblog.setOperateType("OrderServiceForEc.orderListIFSC");
+		dblog.setIfsCCd(r.getIfsEcCd());
+		OrderListIFSCReturn or = new OrderListIFSCReturn();
+		MessageMapping mm = new MessageMapping();
+		if(WebUtil.isNull(r.getIfsKey())||WebUtil.isNull(r.getIfsEcCd()))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查IFSKEY
+		List<IfsUnit> iuList = security.checkSecurityForC( r.getIfsKey(), r.getIfsEcCd(),r.getStoreCd());
+		if(WebUtil.isNullForList(iuList))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查Timestamp
+		if(WebUtil.isNull(r.getTimestamp()))
+		{
+			or.setFlag("ERROR");
+			or.setOrderHeadList(null);
+			or.addMessage(mm.getTimestampErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getTimestampErrorMessageForEc().getMessageCode()+mm.getTimestampErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//设置查询条件
+		OOrderHeadExample example = new OOrderHeadExample();
+		com.ami.ifs.dao.OOrderHeadExample.Criteria c = example.createCriteria();
+		List<Long> storeIdList = new ArrayList();
+		for(IfsUnit i:iuList)
+		{
+			storeIdList.add(i.getStoreId());
+		}
+		c.andStoreIdIn(storeIdList);
+		c.andIfsCCdEqualTo(r.getIfsEcCd());
+		c.andTimestampGreaterThan(r.getTimestamp());
+		int count = oOrderHeadMapper.countByExample(example);
+		List<OOrderHead> ohList = null;
+		if(count>0)
+		{
+			//设置查询条数
+			example.setTop(true);
+			if(r.getPageSize()>1000)
+				example.setTop(1000);
+			else
+				example.setTop(r.getPageSize());
+			//排序
+			example.setOrderByClause("Timestamp,Order_Head_Id");
+			//得到top orderHeadId
+			List<String> orderHeadIdList = oOrderHeadMapper.selectOrderHeadIdByExample(example);
+			OOrderHeadExample example2 = new OOrderHeadExample();
+			com.ami.ifs.dao.OOrderHeadExample.Criteria c2 = example2.createCriteria();
+			c2.andOrderHeadIdIn(orderHeadIdList);
+			//排序
+			example2.setOrderByClause("h.Timestamp,h.Order_Head_Id,l.Disp_Index");
+			ohList = oOrderHeadMapper.selectOrderHeadAndOrderLineByExample(example2);
+		}		
+		or.setOrderHeadList(ohList);
+		or.setRowCount(count);
+		or.setFlag("SUCCESS");
+		//日志插入
+		dblog.setEndOperateTime(new Date());
+		dblog.setSuccess("SUCCESS");
+		ifsDbLogMapper.insertSelective(dblog);
+		return or;
+	}
+
+	public OrderUploadIFSCReturn orderUploadIFSC(OrderUploadIFSCParams r) {
+		//日志插入
+		Date fromDate = new Date();
+		IfsDbLog dblog = new IfsDbLog();
+		dblog.setStartOperateTime(fromDate);
+		dblog.setOperateType("OrderServiceForEc.orderUploadIFSC");
+		dblog.setIfsCCd(r.getIfsEcCd());
+		OrderUploadIFSCReturn or = new OrderUploadIFSCReturn();
+		MessageMapping mm = new MessageMapping();
+		if(WebUtil.isNull(r.getIfsKey())||WebUtil.isNull(r.getIfsEcCd()))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查IFSKEY
+		List<IfsUnit> iuList = security.checkSecurityForC( r.getIfsKey(), r.getIfsEcCd());
+		if(WebUtil.isNullForList(iuList))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//无订单内容
+		List<IOrderHead> ohl = r.getOrderHeadList();
+		if(WebUtil.isNullForList(r.getOrderHeadList()))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getOrderHeadErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getOrderHeadErrorMessageForEc().getMessageCode()+mm.getOrderHeadErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		Map<Long,IfsUnit> m = new HashMap<Long, IfsUnit>();
+		for(IfsUnit iu:iuList)
+		{
+			m.put(iu.getStoreId(), iu);			
+		}
+		StringBuffer orderNos = new StringBuffer();
+		List<SuccessMapping> successList = new ArrayList<SuccessMapping>();
+		int i = 0;
+		for(IOrderHead oh:ohl)
+		{
+			MessageMapping mms = new MessageMapping();
+			i++;
+			//操作类型检查
+			if(WebUtil.isNull(oh.getOperateType()))
+			{
+				Message ms = mms.getOperateTypeErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否为空
+			if(WebUtil.isNull(oh.getStoreId()))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否匹配IFSKEY
+			IfsUnit iu = m.get(oh.getStoreId());
+			if(WebUtil.isNull(iu))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单号
+			if(WebUtil.isNull(oh.getOrigOrderNo()))
+			{
+				Message ms = mms.getOrigOrderNoErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单类型
+			if(WebUtil.isNull(oh.getOrigOrderType()))
+			{
+				Message ms = mms.getOrigOrderTypeMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单状态
+			if(WebUtil.isNull(oh.getOrigOrderStatus()))
+			{
+				Message ms = mms.getOrigOrderStatusErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单状态
+			if(WebUtil.isNull(oh.getOrderStatus()))
+			{
+				Message ms = mms.getOrderStatusErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单明细
+			List<IOrderLine> orderLineList = oh.getOrderLineList();
+			if(WebUtil.isNullForList(orderLineList))
+			{
+				Message ms = mms.getOrderLineErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//事务控制
+			SqlSession session = sqlSessionFactory.openSession();
+			TransactionFactory transactionFactory = new JdbcTransactionFactory();
+			Transaction newTransaction = transactionFactory.newTransaction(session.getConnection(), false);
+			
+			try {
+				//生成UUID,做OrderHeadId
+				oh.setOrderHeadId(UUID.randomUUID().toString());
+				oh.setIfsCCd(iu.getIfsCCd());
+				oh.setIfsACd(iu.getIfsACd());
+				//设置RTN
+				oh.setRtn(new Short("1"));
+				//插入时间
+				oh.setTimestamp(null);
+				//iOrderHeadMapper.insert(oh);
+				session.insert("com.ami.ifs.dao.IOrderHeadMapper.insertSelective", oh);
+				int l = 1;
+				for(IOrderLine ol:orderLineList)
+				{
+					ol.setOrderHeadId(oh.getOrderHeadId());
+					ol.setTimestamp(null);
+					ol.setOrderLineId(UUID.randomUUID().toString());	
+					ol.setDispIndex(l);
+					//iOrderLineMapper.insert(ol);
+					session.insert("com.ami.ifs.dao.IOrderLineMapper.insertSelective", ol);
+					l++;
+				}
+				newTransaction.commit();
+			} catch (NumberFormatException e) {
+				try {
+					newTransaction.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} catch (SQLException e) {
+				try {
+					newTransaction.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}finally {
+				try {
+					newTransaction.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(orderNos.length()>0)
+				orderNos.append(",");
+			orderNos.append(oh.getOrigOrderNo());
+			successList.add(new SuccessMapping(oh.getOrigOrderNo(), oh.getStoreId()));
+		}
+		or.setOrderNos(orderNos.toString());
+		or.setSuccessList(successList);
+		or.setFlag("SUCCESS");
+		//日志插入
+		dblog.setEndOperateTime(new Date());
+		dblog.setSuccess("SUCCESS");
+		ifsDbLogMapper.insertSelective(dblog);
+		return or;
+	}
+
+	public ReturnUploadIFSCReturn returnUploadIFSC(ReturnUploadIFSCParams r) {
+		//日志插入
+		Date fromDate = new Date();
+		IfsDbLog dblog = new IfsDbLog();
+		dblog.setStartOperateTime(fromDate);
+		dblog.setOperateType("OrderServiceForEc.returnUploadIFSC");
+		dblog.setIfsCCd(r.getIfsEcCd());
+		ReturnUploadIFSCReturn or = new ReturnUploadIFSCReturn();
+		MessageMapping mm = new MessageMapping();
+		if(WebUtil.isNull(r.getIfsKey())||WebUtil.isNull(r.getIfsEcCd()))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查IFSKEY
+		List<IfsUnit> iuList = security.checkSecurityForC( r.getIfsKey(), r.getIfsEcCd());
+		if(WebUtil.isNullForList(iuList))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//无订单内容
+		List<IOrderHead> ohl = r.getOrderHeadList();
+		if(WebUtil.isNullForList(r.getOrderHeadList()))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getOrderHeadErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getOrderHeadErrorMessageForEc().getMessageCode()+mm.getOrderHeadErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		Map<Long,IfsUnit> m = new HashMap<Long, IfsUnit>();
+		for(IfsUnit iu:iuList)
+		{
+			m.put(iu.getStoreId(), iu);			
+		}
+		StringBuffer orderNos = new StringBuffer();
+		List<SuccessMapping> successList = new ArrayList<SuccessMapping>();
+		int i = 0;
+		for(IOrderHead oh:ohl)
+		{
+
+			MessageMapping mms = new MessageMapping();
+			i++;
+			//操作类型检查
+			if(WebUtil.isNull(oh.getOperateType()))
+			{
+				Message ms = mms.getOperateTypeErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否为空
+			if(WebUtil.isNull(oh.getStoreId()))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否匹配IFSKEY
+			IfsUnit iu = m.get(oh.getStoreId());
+			if(WebUtil.isNull(iu))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单号
+			if(WebUtil.isNull(oh.getOrigOrderNo()))
+			{
+				Message ms = mms.getOrigOrderNoErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单类型
+			if(WebUtil.isNull(oh.getOrigOrderType()))
+			{
+				Message ms = mms.getOrigOrderTypeMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单状态
+			if(WebUtil.isNull(oh.getOrigOrderStatus()))
+			{
+				Message ms = mms.getOrigOrderStatusErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单状态
+			if(WebUtil.isNull(oh.getOrderStatus()))
+			{
+				Message ms = mms.getOrderStatusErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单明细
+			List<IOrderLine> orderLineList = oh.getOrderLineList();
+			if(WebUtil.isNullForList(orderLineList))
+			{
+				Message ms = mms.getOrderLineErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+oh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(oh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//事务控制
+			SqlSession session = sqlSessionFactory.openSession();
+			TransactionFactory transactionFactory = new JdbcTransactionFactory();
+			Transaction newTransaction = transactionFactory.newTransaction(session.getConnection(), false);
+			//生成UUID,做OrderHeadId
+			try {
+				oh.setOrderHeadId(UUID.randomUUID().toString());
+				oh.setIfsCCd(iu.getIfsCCd());
+				oh.setIfsACd(iu.getIfsACd());
+				//设置RTN
+				oh.setRtn(new Short("-1"));
+				//插入时间
+				oh.setTimestamp(null);
+				//iOrderHeadMapper.insert(oh);
+				session.insert("com.ami.ifs.dao.IOrderHeadMapper.insertSelective", oh);
+				int l = 1;
+				for(IOrderLine ol:orderLineList)
+				{
+					ol.setOrderHeadId(oh.getOrderHeadId());
+					ol.setTimestamp(null);
+					ol.setOrderLineId(UUID.randomUUID().toString());	
+					ol.setDispIndex(l);
+					//iOrderLineMapper.insert(ol);
+					session.insert("com.ami.ifs.dao.IOrderLineMapper.insertSelective", ol);
+					l++;
+				}
+				if(orderNos.length()>0)
+					orderNos.append(",");
+				orderNos.append(oh.getOrigOrderNo());
+				successList.add(new SuccessMapping(oh.getOrigOrderNo(), oh.getStoreId()));
+				newTransaction.commit();
+			} catch (Exception e) {
+				try {
+					newTransaction.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}finally {
+				try {
+					newTransaction.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		or.setOrderNos(orderNos.toString());
+		or.setSuccessList(successList);
+		or.setFlag("SUCCESS");
+		//日志插入
+		dblog.setEndOperateTime(new Date());
+		dblog.setSuccess("SUCCESS");
+		ifsDbLogMapper.insertSelective(dblog);
+		return or;
+	}
+
+	public DnUploadIFSCReturn dnUploadIFSC(DnUploadIFSCParams r) {
+		//日志插入
+		Date fromDate = new Date();
+		IfsDbLog dblog = new IfsDbLog();
+		dblog.setStartOperateTime(fromDate);
+		dblog.setOperateType("OrderServiceForEc.dnUploadIFSC");
+		dblog.setIfsCCd(r.getIfsEcCd());
+		DnUploadIFSCReturn or = new DnUploadIFSCReturn();
+		MessageMapping mm = new MessageMapping();
+		if(WebUtil.isNull(r.getIfsKey())||WebUtil.isNull(r.getIfsEcCd()))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//检查IFSKEY
+		List<IfsUnit> iuList = security.checkSecurityForC( r.getIfsKey(), r.getIfsEcCd());
+		if(WebUtil.isNullForList(iuList))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getKeyErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getKeyErrorMessageForEc().getMessageCode()+mm.getKeyErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		//无订单内容
+		List<IDnIfHead> ohl = r.getDnIfHeadList();
+		if(WebUtil.isNullForList(ohl))
+		{
+			or.setFlag("ERROR");
+			or.addMessage(mm.getOrderHeadErrorMessageForEc());
+			//日志插入
+			dblog.setEndOperateTime(new Date());
+			dblog.setSuccess("ERROR");
+			dblog.setRemark(mm.getOrderHeadErrorMessageForEc().getMessageCode()+mm.getOrderHeadErrorMessageForEc().getMessageContent());
+			ifsDbLogMapper.insertSelective(dblog);
+			return or;
+		}
+		Map<Long,IfsUnit> m = new HashMap<Long, IfsUnit>();
+		for(IfsUnit iu:iuList)
+		{
+			m.put(iu.getStoreId(), iu);			
+		}
+		StringBuffer orderNos = new StringBuffer();
+		List<SuccessMapping> successList = new ArrayList<SuccessMapping>();
+		int i = 0;
+		for(IDnIfHead dh:ohl)
+		{
+			MessageMapping mms = new MessageMapping();
+			i++;
+			//操作类型检查
+			if(WebUtil.isNull(dh.getOperateType()))
+			{
+				Message ms = mms.getOperateTypeErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否为空
+			if(WebUtil.isNull(dh.getStoreId()))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查店铺ID是否匹配IFSKEY
+			IfsUnit iu = m.get(dh.getStoreId());
+			if(WebUtil.isNull(iu))
+			{
+				Message ms = mms.getStoreErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单号
+			if(WebUtil.isNull(dh.getOrigOrderNo()))
+			{
+				Message ms = mms.getOrigOrderNoErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查原订单类型
+			if(WebUtil.isNull(dh.getOrigOrderType()))
+			{
+				Message ms = mms.getOrigOrderTypeMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单状态
+			if(WebUtil.isNull(dh.getOrderStatus()))
+			{
+				Message ms = mms.getOrderStatusErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//检查订单明细
+			List<IDnIfLine> dnLineList = dh.getDnIfLineList();
+			if(WebUtil.isNullForList(dnLineList))
+			{
+				Message ms = mms.getOrderLineErrorMessageForEc();
+				ms.setMessageContent("第"+i+"条OrigOrderNo["+dh.getOrigOrderNo()+"]"+ms.getMessageContent());
+				ms.setStoreId(dh.getStoreId());
+				or.addMessage(ms);
+				continue;
+			}
+			//事务控制
+			SqlSession session = sqlSessionFactory.openSession();
+			TransactionFactory transactionFactory = new JdbcTransactionFactory();
+			Transaction newTransaction = transactionFactory.newTransaction(session.getConnection(), false);
+			
+			try {
+				//生成UUID,做OrderHeadId
+				dh.setDnIfHeadId(UUID.randomUUID().toString());
+				dh.setIfsCCd(iu.getIfsCCd());
+				dh.setIfsACd(iu.getIfsACd());
+				//插入时间
+				dh.setTimestamp(null);
+				session.insert("com.ami.ifs.dao.IDnIfHeadMapper.insertSelective", dh);
+				int l = 1;
+				for(IDnIfLine dl:dnLineList)
+				{
+					dl.setDnIfHeadId(dh.getDnIfHeadId());
+					dl.setId(UUID.randomUUID().toString());	
+					session.insert("com.ami.ifs.dao.IDnIfLineMapper.insertSelective", dl);
+					l++;
+				}
+				newTransaction.commit();
+			} catch (NumberFormatException e) {
+				try {
+					newTransaction.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} catch (SQLException e) {
+				try {
+					newTransaction.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}finally {
+				try {
+					newTransaction.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(orderNos.length()>0)
+				orderNos.append(",");
+			orderNos.append(dh.getOrigOrderNo());
+			successList.add(new SuccessMapping(dh.getOrigOrderNo(), dh.getStoreId()));
+		}
+		or.setOrderNos(orderNos.toString());
+		or.setSuccessList(successList);
+		or.setFlag("SUCCESS");
+		//日志插入
+		dblog.setEndOperateTime(new Date());
+		dblog.setSuccess("SUCCESS");
+		ifsDbLogMapper.insertSelective(dblog);
+		return or;
+	}
+}

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.sunmw.web.entity">
+	<class
+		name="TempServicePayment"
+		table="temp_service_payment"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id
+			name="Id"
+			type="integer"
+			column="id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="MachineNo"
+			column="machine_no"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="ServiceFromDate"
+			column="service_from_date"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="PaymentStatus"
+			column="payment_status"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="PaymentCompany"
+			column="payment_company"
+			type="string"
+			not-null="false"
+			length="255"
+		/>
+		<property
+			name="PaymentCompanyCd"
+			column="payment_company_cd"
+			type="string"
+			not-null="false"
+			length="30"
+		/>
+		<property
+			name="PaymentDate"
+			column="payment_date"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="PaymentAmt"
+			column="payment_amt"
+			type="big_decimal"
+			not-null="false"
+			length="18"
+		/>
+		<property
+			name="Flag"
+			column="flag"
+			type="string"
+			not-null="false"
+			length="10"
+		/>
+		<property
+			name="WriterTime"
+			column="writer_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ReaderTime"
+			column="reader_time"
+			type="timestamp"
+			not-null="false"
+			length="23"
+		/>
+		<property
+			name="ImportUser"
+			column="import_user"
+			type="string"
+			not-null="false"
+			length="50"
+		/>
+
+
+	</class>	
+</hibernate-mapping>
